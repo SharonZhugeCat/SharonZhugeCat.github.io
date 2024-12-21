@@ -1,336 +1,556 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sharon的个人网站</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap">
     <style>
-        /* 修复滑动和溢出问题 */
+        :root {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #333333;
+            --accent-color: #9ba3af;
+            --hover-color: #7d8491;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
         body {
-            min-height: 100vh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            line-height: 1.6;
         }
 
-        .content {
-            min-height: 100vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* 增加 iOS 滚动流畅度 */
+        header {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--accent-color) 100%);
+            padding: 1.2rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* 添加移动端样式 */
-        @media (max-width: 768px) {
-            .content {
-                padding: 10px;
-                height: auto;
+        header h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            margin: 0;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .project-card {
+            position: relative;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .project-link {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--accent-color);
+            color: var(--bg-secondary);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .about-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media screen and (max-width: 768px) {
+            .project-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .main-container {
-                flex-direction: column;
-                max-width: 95%;
-                margin: 10px;
-                padding: 15px;
-                height: auto;
-                overflow: visible;
+            main {
+                padding: 0 0.5rem;
             }
 
-            /* 优化移动端文字显示 */
-            #daily-sentence {
-                font-size: 14px;
-                padding: 10px;
-                word-break: break-word;
-                line-height: 1.4;
-                max-height: 200px;
-                overflow-y: auto;
-            }
-
-            /* 优化按钮样式 */
-            .links {
-                flex-direction: column;
-                gap: 10px;
-                padding: 0 10px;
-            }
-
-            .links a {
-                width: 100%;
-                text-align: center;
-                white-space: normal; /* 允许按钮文字换行 */
-                height: auto;
-                padding: 8px 15px;
-            }
-
-            /* 优化音乐播放器布局 */
-            .music-player {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-                padding: 0 10px;
-            }
-
-            .play-pause-btn {
-                width: 100%;
-                max-width: 200px;
-            }
-
-            /* 优化天气显示 */
-            .weather-container {
-                margin-top: 15px;
-                padding: 15px;
-                font-size: 14px;
-            }
-
-            /* 优化头像加载 */
-            .avatar {
-                width: 100px;
-                height: 100px;
-                object-fit: cover;
-                loading: lazy;
+            .about-section {
+                padding: 1rem;
             }
         }
 
-        /* 添加平板设备的样式 */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .main-container {
-                max-width: 90%;
-            }
+        .settings-btn {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            padding: 0;
+        }
 
-            .gradientText {
-                font-size: 45px;
-            }
+        .settings-btn:hover {
+            background: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
 
-            .avatar {
-                width: 120px;
-                height: 120px;
-            }
+        .settings-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .settings-btn:hover svg {
+            transform: rotate(90deg);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            min-width: 300px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .theme-btn {
+            padding: 0.8rem;
+            border: 2px solid var(--accent-color);
+            background-color: transparent;
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn.active {
+            background-color: var(--accent-color);
+            color: var(--bg-secondary);
+        }
+
+        .project-card-header {
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--accent-color), var(--hover-color));
+            color: var(--bg-secondary);
+        }
+
+        .project-card-body {
+            padding: 1.5rem;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+        }
+
+        .project-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-stat svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background-color: var(--bg-primary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+        }
+
+        /* 添加个人信息区域样式 */
+        .personal-info {
+            text-align: center;
+            padding: 2rem;
+            margin: 2rem 0;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--accent-color), var(--hover-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-secondary);
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .personal-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* 修改主题按钮样式 */
+        [data-theme="light"] {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #333333;
+            --accent-color: #9ba3af;
+            --hover-color: #7d8491;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #2c2c2c;
+            --bg-secondary: #3a3a3a;
+            --text-primary: #ffffff;
+            --accent-color: #666666;
+            --hover-color: #808080;
+        }
+
+        [data-theme="blue"] {
+            --bg-primary: #e6eef4;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --accent-color: #8ca5ba;
+            --hover-color: #6b8ba8;
+        }
+
+        [data-theme="green"] {
+            --bg-primary: #e8f0e9;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c4a2f;
+            --accent-color: #90ab93;
+            --hover-color: #728f75;
+        }
+
+        [data-theme="yellow"] {
+            --bg-primary: #f4f1e6;
+            --bg-secondary: #ffffff;
+            --text-primary: #4a442c;
+            --accent-color: #bab38c;
+            --hover-color: #a09872;
+        }
+
+        [data-theme="pink"] {
+            --bg-primary: #f4e6eb;
+            --bg-secondary: #ffffff;
+            --text-primary: #4a2c3a;
+            --accent-color: #ba8ca0;
+            --hover-color: #a06b84;
+        }
+
+        [data-theme="purple"] {
+            --bg-primary: #ebe6f4;
+            --bg-secondary: #ffffff;
+            --text-primary: #382c4a;
+            --accent-color: #9f8cba;
+            --hover-color: #846ba0;
+        }
+
+        .theme-btn {
+            padding: 0.8rem;
+            border: 2px solid var(--accent-color);
+            background-color: transparent;
+            color: var(--text-primary);
+        }
+
+        .theme-btn.active {
+            background-color: var(--accent-color);
+            color: var(--bg-secondary) !important;
+            border-color: var(--accent-color);
+        }
+
+        .image-item {
+            position: relative;
+        }
+
+        .image-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .image-checkbox + label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .image-checkbox:checked + label {
+            background: var(--accent-color);
+        }
+
+        .image-checkbox:checked + label::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .image-checkbox + label:hover {
+            background: var(--hover-color);
+        }
+
+        .image-checkbox:checked + label:hover {
+            background: var(--hover-color);
+        }
+
+        .image-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <canvas class="vh-bg"></canvas>
-    
-    <div class="content">
-        <div class="main-container">
-            <div class="left-section">
-                <img src="Assests/头像.png" alt="头像" class="avatar">
-            </div>
-            <div class="center-section">
-                <div class="intro">
-                    <div class="welcome">你好, 我是 <span class="gradientText">Sharon</span></div>
-                    <div class="intro">
-                        <p id="daily-sentence">每日一言</p>
-                    </div>
-                    <div id="time-greeting">
-                        <div id="current-time"></div>
-                        <div id="greeting"></div>
-                    </div>
-                </div>
+    <header>
+        <h1>Sharon的个人网站</h1>
+        <button id="settingsBtn" class="settings-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </svg>
+        </button>
+    </header>
 
-                <div class="music-player">
-                    <audio id="audio-player" src="Assests/music.mp3"></audio>
-                    <button id="play-pause" class="play-pause-btn">播放</button>
-                    
-                    <div class="volume-control">
-                        <button id="volume-btn" class="volume-btn">🔊</button>
-                        <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" class="volume-slider">
+    <main>
+        <div class="personal-info">
+            <div class="avatar">S</div>
+            <h2 class="personal-name">Sharon</h2>
+            <p>“你是叛徒我是什么？是叛徒的挚友。”——歌曲《大小姐和大少爷的反派生涯》</p>
+        </div>
+        <div class="project-grid">
+            <div class="project-card">
+                <div class="project-card-header">
+                    <h2 class="project-title">漫画阅读</h2>
+                </div>
+                <div class="project-card-body">
+                    <p class="project-desc">在线漫画阅读工具，提供流畅的阅读体验。</p>
+                    <div class="tag-list">
+                        <span class="tag">在线阅读</span>
+                        <span class="tag">多源支持</span>
+                        <span class="tag">免费</span>
                     </div>
-                </div>                
-
-                <div class="links">
-                    <a href="https://space.bilibili.com/85363357" target="_blank" class="styled-btn">Bilibili</a>
-                    <a href="tools.html" target="_blank" class="styled-btn">工具站</a>
+                    <!--
+                    <div class="project-stats">
+                        <div class="project-stat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span>1.2k</span>
+                        </div>
+                        <div class="project-stat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            </svg>
+                            <span>3.5k</span>
+                        </div>
+                    </div>
+                    -->
+                    <a href="Tools/Comic/index.html" class="project-link">开始阅读</a>
                 </div>
             </div>
-            <div class="new-right-section">
-                <div id="today-weather" class="weather-container">
-                    <h3>今日天气</h3>
-                    <div id="weather-info">
-                        <p>加载中...</p>
-                    </div>
+            <div class="project-card">
+                <div class="project-card-header">
+                    <h2 class="project-title">图片视频解析</h2>
                 </div>
+                <div class="project-card-body">
+                    <p class="project-desc">可以一键下载多个平台的图片/视频。</p>
+                    <div class="tag-list">
+                        <span class="tag">一键解析</span>
+                    <span class="tag">下载</span>
+                    <span class="tag">资源</span>
+                </div>
+                <a href="Tools/图片视频解析/index.html" class="project-link">开始使用</a>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+        <div class="about-section">
+            <h2>关于我</h2>
+            <p>我是一名热爱技术的开发者，专注于创造实用且有趣的工具和应用。</p>
+            <p>目前正在不断学习和探索新技术，希望能够通过这些项目帮助到更多的人。</p>
+            <p>B站名：诸葛喵</p>
+        </div>
+    </main>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>主题设置</h2>
+            <div class="theme-options">
+                <button data-theme="light" class="theme-btn active">浅云白</button>
+                <button data-theme="dark" class="theme-btn">深墨染</button>
+                <button data-theme="blue" class="theme-btn">清新蓝</button>
+                <button data-theme="green" class="theme-btn">自然绿</button>
+                <button data-theme="yellow" class="theme-btn">温暖黄</button>
+                <button data-theme="pink" class="theme-btn">浪漫粉</button>
+                <button data-theme="purple" class="theme-btn">宁静紫</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function updateTimeAndGreeting() {
-            const timeElement = document.getElementById('current-time');
-            const greetingElement = document.getElementById('greeting');
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsModal = document.getElementById('settingsModal');
+            const themeButtons = document.querySelectorAll('.theme-btn');
 
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
+            // 设置按钮点击事件
+            settingsBtn.addEventListener('click', () => {
+                settingsModal.style.display = 'block';
+            });
 
-            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
-
-            let greeting = '';
-            if (hours >= 6 && hours < 12) {
-                greeting = "*这是新的一天，你充满了希望";
-            } else if (hours >= 12 && hours < 18) {
-                greeting = "*过了一个上午了，你充满了信心";
-            } else if (hours >= 18 && hours < 24) {
-                greeting = "*现在是晚上了，你充满了快乐";
-            } else {
-                greeting = "*现在是深夜了，我的朋友，恭喜你度过了一天";
-            }
-
-            greetingElement.textContent = greeting;
-        }
-
-        const beautifulSentences = [
-            "每个人，都是一颗明亮的星星，点缀这漫长的夜，浩瀚星空。",
-            "逝去之人永远在，只是化为天上的星星而已。",
-            "It matters not what someone is born,but what they grow to be. ——Dumbledore",
-            "It is our choices,that show what we really are,far more than our abilities. ——Dumbledore",
-            "-After all this Time? -Always.",
-            "勇敢并不是一个人手中拿着枪，而是在你动手之前你已经知道自己会输，但依然会动手，而且无论如何会坚持到底。",
-            "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light. ——Dumbledore",
-            "It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends. ——Dumbledore",
-            "To the well-organized mind, death is but the next great adventure. ——Dumbledore",
-            "Things we lose have a way of coming back to us in the end, if not always in the way we expect. ——Luna Lovegood",
-            "You sort of start thinking anything’s possible if you’ve got enough nerve. ——Ginny Weasley",
-            "We must all face the choice between what is right and what is easy. ——Dumbledore",
-            "I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration. ——Frank Herbert, Dune《沙丘》",
-            "Thus we never see the true state of our condition till it is illustrated to us by its contraries, nor know how to value what we enjoy, but by the want of it. ——Daniel Defoe, Robinson Crusoe《鲁滨逊漂流记》",
-            "If you want to know what a man’s like, take a good look at how he treats his inferiors, not his equals. ——Sirius Black"
-        ];
-
-        // 添加移动端检测和优化
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        window.onload = function() {
-            const randomSentence = beautifulSentences[Math.floor(Math.random() * beautifulSentences.length)];
-            const dailySentenceElement = document.getElementById('daily-sentence');
-            dailySentenceElement.textContent = randomSentence;
-
-            updateTimeAndGreeting();
-            setInterval(updateTimeAndGreeting, 1000);
-
-            const audioPlayer = document.getElementById('audio-player');
-            const playPauseBtn = document.getElementById('play-pause');
-            const volumeSlider = document.getElementById('volume-slider');
-
-            playPauseBtn.addEventListener('click', function() {
-                if (audioPlayer.paused) {
-                    audioPlayer.play();
-                    playPauseBtn.textContent = '暂停';
-                } else {
-                    audioPlayer.pause();
-                    playPauseBtn.textContent = '播放';
+            // 点击模态框外部关闭模态框
+            window.addEventListener('click', (e) => {
+                if (e.target === settingsModal) {
+                    settingsModal.style.display = 'none';
                 }
             });
 
-            volumeSlider.addEventListener('input', function() {
-                audioPlayer.volume = volumeSlider.value;
-            });
-
-            async function fetchUserInfo() {
-                try {
-                    const userInfoResponse = await fetch('https://api.vvhan.com/api/visitor.info');
-                    const userInfo = await userInfoResponse.json();
+            // 主题切换
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const theme = button.dataset.theme;
+                    document.documentElement.setAttribute('data-theme', theme);
                     
-                    if (userInfo.success) {
-                        fetchWeather(userInfo.ip);
-                    } else {
-                        document.getElementById('weather-info').innerHTML = '<p>获取用户信息失败</p>';
-                    }
-                } catch (error) {
-                    console.error('获取用户信息时出错:', error);
-                    document.getElementById('weather-info').innerHTML = '<p>获取用户信息失败</p>';
-                }
-            }
+                    // 更新活动状态
+                    themeButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // 保存主题设置到本地存储
+                    localStorage.setItem('theme', theme);
 
-            async function fetchWeather(ip) {
-                try {
-                    const weatherResponse = await fetch(`https://api.vvhan.com/api/weather?ip=${ip}`);
-                    const weatherData = await weatherResponse.json();
-
-                    if (weatherData.success) {
-                        displayWeather(weatherData);
-                    } else {
-                        document.getElementById('weather-info').innerHTML = '<p>获取天气信息失败</p>';
-                    }
-                } catch (error) {
-                    console.error('获取天气信息时出错:', error);
-                    document.getElementById('weather-info').innerHTML = '<p>获取天气信息失败</p>';
-                }
-            }
-
-            function displayWeather(weatherData) {
-                const weatherInfo = document.getElementById('weather-info');
-                const data = weatherData.data;
-                const air = weatherData.air;
-
-                weatherInfo.innerHTML = `
-                    <p><strong>天气：</strong> ${data.type}</p>
-                    <p><strong>温度：</strong> ${data.low} ~ ${data.high}</p>
-                    <p><strong>风向：</strong> ${data.fengxiang} (${data.fengli})</p>
-                    <p class="weather-detail"><strong>夜间天气：</strong> ${data.night.type}, ${data.night.fengxiang} (${data.night.fengli})</p>
-                `;
-            }
-            fetchUserInfo();
-
-            // 移动端音量控制优化
-            if (isMobileDevice()) {
-                const volumeControl = document.querySelector('.volume-control');
-                const volumeSlider = document.getElementById('volume-slider');
-                const volumeBtn = document.getElementById('volume-btn');
-
-                volumeBtn.addEventListener('click', function() {
-                    volumeSlider.style.display = volumeSlider.style.display === 'none' ? 'block' : 'none';
+                    // 关闭模态框
+                    settingsModal.style.display = 'none';
                 });
+            });
 
-                // 点击其他地方时隐藏音量滑块
-                document.addEventListener('click', function(e) {
-                    if (!volumeControl.contains(e.target)) {
-                        volumeSlider.style.display = 'none';
+            // 从本地存储加载主题设置
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                themeButtons.forEach(button => {
+                    if (button.dataset.theme === savedTheme) {
+                        button.classList.add('active');
                     }
                 });
             }
-
-            // 优化每日一言的显示
-            if (isMobileDevice()) {
-                dailySentenceElement.style.fontSize = '16px';
-                dailySentenceElement.style.lineHeight = '1.4';
-            }
-
-            // 图片加载优化
-            const avatar = document.querySelector('.avatar');
-            if (avatar) {
-                // 添加加载占位符
-                avatar.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                
-                // 图片加载完成后移除占位符
-                avatar.onload = function() {
-                    this.style.backgroundColor = 'transparent';
-                };
-
-                // 图片加载失败处理
-                avatar.onerror = function() {
-                    this.src = 'Assests/default-avatar.png'; // 设置默认头像
-                };
-            }
-
-            // 优化移动端长句子显示
-            if (isMobileDevice()) {
-                const dailySentence = document.getElementById('daily-sentence');
-                if (dailySentence) {
-                    const text = dailySentence.textContent;
-                    if (text.length > 100) { // 如果文字太长
-                        dailySentence.style.fontSize = '12px'; // 缩小字体
-                    }
-                }
-            }
-        };
-
-        // 添加触摸滑动支持
-        document.addEventListener('touchmove', function(e) {
-            e.stopPropagation();
-        }, { passive: true });
+        });
     </script>
 </body>
-</html>
+</html> 
