@@ -38,6 +38,18 @@
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         header {
@@ -60,48 +72,71 @@
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
         }
 
         input[type="text"] {
             flex: 1;
             padding: 12px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             font-size: 16px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             transition: all 0.3s ease;
+            min-width: 0;
+            backdrop-filter: blur(5px);
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #f76cc6;
+            border-color: rgba(247, 108, 198, 0.8);
             box-shadow: 0 0 0 3px rgba(247, 108, 198, 0.2);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         button {
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #f76cc6, #a770ef);
             color: white;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            padding: 12px 24px;
+            border: none;
+            padding: 12px 20px;
             border-radius: 50px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(247, 108, 198, 0.3);
         }
 
         button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #ff7fd7, #b685ff);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(247, 108, 198, 0.4);
         }
 
         .result-container {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
             display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .answer-text {
@@ -128,17 +163,19 @@
         }
 
         .question-list li {
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .question-list li:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .sources {
@@ -163,14 +200,29 @@
         }
 
         .source-list a {
-            color: #f76cc6;
+            color: #ff7fd7;
             text-decoration: none;
             display: block;
             margin-bottom: 5px;
+            font-weight: 500;
+            position: relative;
+            display: inline-block;
         }
 
-        .source-list a:hover {
-            text-decoration: underline;
+        .source-list a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(90deg, #ff7fd7, #b685ff);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .source-list a:hover::after {
+            transform: scaleX(1);
         }
 
         .source-list p {
@@ -298,14 +350,43 @@
             height: 50px;
             border: 3px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            border-top-color: #f76cc6;
+            border-top-color: #ff7fd7;
+            border-right-color: #b685ff;
             animation: spin 1s linear infinite;
             margin: 0 auto 15px;
+            filter: drop-shadow(0 0 10px rgba(247, 108, 198, 0.3));
         }
 
         @keyframes spin {
             to {
                 transform: rotate(360deg);
+            }
+        }
+
+        /* 添加响应式样式 */
+        @media screen and (max-width: 480px) {
+            .container {
+                width: 95%;
+                padding: 20px 10px;
+            }
+
+            .search-container {
+                padding: 0;
+                margin-bottom: 20px;
+            }
+
+            input[type="text"] {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            button {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .result-container {
+                padding: 15px;
             }
         }
     </style>
@@ -324,7 +405,7 @@
 
         <div id="loadingContainer" class="loading-container">
             <div class="loading-spinner"></div>
-            <div>正在思考中...</div>
+            <div>正在��考中...</div>
         </div>
 
         <div id="resultContainer" class="result-container">
@@ -395,7 +476,7 @@
                 questionList.appendChild(li);
             });
 
-            // 显示来源
+            // 显示来��
             sourceList.innerHTML = '';
             data.sources.forEach(source => {
                 const li = document.createElement('li');
@@ -433,7 +514,7 @@
         marked.setOptions({
             breaks: true,  // 支持 GitHub 风格的换行
             gfm: true,     // 启用 GitHub 风格的 Markdown
-            headerIds: false, // 禁用标题 ID 以避免冲突
+            headerIds: false, // 禁���标题 ID 以避免冲突
             mangle: false,  // 禁用标题 ID 转义
             sanitize: true  // 清理 HTML 标签以防止 XSS
         });
