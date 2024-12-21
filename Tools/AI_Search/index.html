@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI搜索 - Sharon的个人网站</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #333333;
+            --accent-color: #9ba3af;
+            --hover-color: #7d8491;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            background: linear-gradient(120deg, rgb(133, 62, 255), #f76cc6 30%, rgb(255, 255, 255) 60%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #f76cc6;
+            box-shadow: 0 0 0 3px rgba(247, 108, 198, 0.2);
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .result-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .answer-text {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .related-questions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .related-questions h3 {
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .question-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .question-list li {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .question-list li:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sources {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sources h3 {
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .source-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .source-list li {
+            margin-bottom: 15px;
+        }
+
+        .source-list a {
+            color: #f76cc6;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .source-list a:hover {
+            text-decoration: underline;
+        }
+
+        .source-list p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Markdown 样式 */
+        .markdown-content {
+            line-height: 1.6;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .markdown-content h2 {
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .markdown-content p {
+            margin-bottom: 16px;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            padding-left: 2em;
+            margin-bottom: 16px;
+        }
+
+        .markdown-content li {
+            margin: 0.5em 0;
+        }
+
+        .markdown-content code {
+            padding: 0.2em 0.4em;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .markdown-content pre {
+            padding: 16px;
+            overflow: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .markdown-content pre code {
+            padding: 0;
+            background: none;
+        }
+
+        .markdown-content blockquote {
+            padding: 0 1em;
+            color: rgba(255, 255, 255, 0.7);
+            border-left: 0.25em solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .markdown-content table th,
+        .markdown-content table td {
+            padding: 6px 13px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .markdown-content table tr {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .markdown-content table tr:nth-child(2n) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 加载动画样式 */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #f76cc6;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI搜索</h1>
+            <p>输入任何问题，让AI为您解答</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="请输入您的问题...">
+            <button onclick="search()">搜索</button>
+        </div>
+
+        <div id="loadingContainer" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div>正在思考中...</div>
+        </div>
+
+        <div id="resultContainer" class="result-container">
+            <div id="answerText" class="answer-text"></div>
+            
+            <div class="related-questions">
+                <h3>相关问题</h3>
+                <ul id="questionList" class="question-list"></ul>
+            </div>
+
+            <div class="sources">
+                <h3>参考来源</h3>
+                <ul id="sourceList" class="source-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function search() {
+            const input = document.getElementById('searchInput');
+            const keyword = input.value.trim();
+            const loadingContainer = document.getElementById('loadingContainer');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            if (!keyword) {
+                showMessage('请输入搜索关键词');
+                return;
+            }
+
+            loadingContainer.style.display = 'block';
+            resultContainer.style.display = 'none';
+
+            try {
+                const response = await fetch(`https://api.pearktrue.cn/api/aisearch/?keyword=${encodeURIComponent(keyword)}`);
+                const data = await response.json();
+
+                if (data.code === 200) {
+                    displayResults(data.data);
+                } else {
+                    showMessage('搜索失败：' + data.msg);
+                }
+            } catch (error) {
+                showMessage('搜索出错：' + error.message);
+            } finally {
+                loadingContainer.style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            const resultContainer = document.getElementById('resultContainer');
+            const answerText = document.getElementById('answerText');
+            const questionList = document.getElementById('questionList');
+            const sourceList = document.getElementById('sourceList');
+
+            // 使用 marked 解析 Markdown
+            answerText.className = 'answer-text markdown-content';
+            answerText.innerHTML = marked.parse(data.text);
+
+            // 显示相关问题
+            questionList.innerHTML = '';
+            data.related_questions.forEach(question => {
+                const li = document.createElement('li');
+                li.textContent = question;
+                li.onclick = () => {
+                    document.getElementById('searchInput').value = question;
+                    search();
+                };
+                questionList.appendChild(li);
+            });
+
+            // 显示来源
+            sourceList.innerHTML = '';
+            data.sources.forEach(source => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <a href="${source.link}" target="_blank">${source.title}</a>
+                    <p>${source.snippet}</p>
+                `;
+                sourceList.appendChild(li);
+            });
+
+            // 显示结果容器
+            resultContainer.style.display = 'block';
+        }
+
+        function showMessage(message) {
+            const messageBox = document.createElement('div');
+            messageBox.className = 'message-box';
+            messageBox.textContent = message;
+            document.body.appendChild(messageBox);
+
+            setTimeout(() => {
+                messageBox.style.opacity = '0';
+                setTimeout(() => messageBox.remove(), 300);
+            }, 3000);
+        }
+
+        // 添加回车键搜索功能
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+
+        // 配置 marked 选项
+        marked.setOptions({
+            breaks: true,  // 支持 GitHub 风格的换行
+            gfm: true,     // 启用 GitHub 风格的 Markdown
+            headerIds: false, // 禁用标题 ID 以避免冲突
+            mangle: false,  // 禁用标题 ID 转义
+            sanitize: true  // 清理 HTML 标签以防止 XSS
+        });
+    </script>
+</body>
+</html>
