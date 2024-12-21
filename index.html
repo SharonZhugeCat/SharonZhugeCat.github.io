@@ -5,6 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sharon的个人网站</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 添加移动端样式 */
+        @media (max-width: 768px) {
+            .content {
+                padding: 10px;
+            }
+
+            .main-container {
+                flex-direction: column;
+                max-width: 95%;
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .left-section {
+                padding: 10px;
+            }
+
+            .avatar {
+                width: 100px;
+                height: 100px;
+            }
+
+            .center-section {
+                margin: 10px 0;
+            }
+
+            .new-right-section {
+                width: 100%;
+            }
+
+            .welcome {
+                font-size: 24px;
+            }
+
+            .gradientText {
+                font-size: 32px;
+            }
+
+            .links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .links a {
+                width: 100%;
+                text-align: center;
+            }
+
+            .music-player {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .play-pause-btn {
+                width: 100%;
+            }
+
+            .volume-control {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .volume-btn {
+                width: auto;
+                margin-right: 10px;
+            }
+
+            .volume-slider {
+                position: relative;
+                transform: none;
+                left: 0;
+                width: 150px;
+                display: block;
+            }
+
+            .volume-control:hover .volume-slider {
+                transform: none;
+            }
+
+            #time-greeting {
+                margin-top: 15px;
+            }
+
+            #current-time {
+                font-size: 28px;
+            }
+
+            #greeting {
+                font-size: 18px;
+            }
+
+            .weather-container {
+                margin-top: 15px;
+                padding: 15px;
+            }
+
+            #daily-sentence {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+
+        /* 添加平板设备的样式 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .main-container {
+                max-width: 90%;
+            }
+
+            .gradientText {
+                font-size: 45px;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
 </head>
 <body>
     <canvas class="vh-bg"></canvas>
@@ -97,6 +219,11 @@
             "If you want to know what a man’s like, take a good look at how he treats his inferiors, not his equals. ——Sirius Black"
         ];
 
+        // 添加移动端检测和优化
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         window.onload = function() {
             const randomSentence = beautifulSentences[Math.floor(Math.random() * beautifulSentences.length)];
             const dailySentenceElement = document.getElementById('daily-sentence');
@@ -168,6 +295,30 @@
                 `;
             }
             fetchUserInfo();
+
+            // 移动端音量控制优化
+            if (isMobileDevice()) {
+                const volumeControl = document.querySelector('.volume-control');
+                const volumeSlider = document.getElementById('volume-slider');
+                const volumeBtn = document.getElementById('volume-btn');
+
+                volumeBtn.addEventListener('click', function() {
+                    volumeSlider.style.display = volumeSlider.style.display === 'none' ? 'block' : 'none';
+                });
+
+                // 点击其他地方时隐藏音量滑块
+                document.addEventListener('click', function(e) {
+                    if (!volumeControl.contains(e.target)) {
+                        volumeSlider.style.display = 'none';
+                    }
+                });
+            }
+
+            // 优化每日一言的显示
+            if (isMobileDevice()) {
+                dailySentenceElement.style.fontSize = '16px';
+                dailySentenceElement.style.lineHeight = '1.4';
+            }
         };
     </script>
 </body>
