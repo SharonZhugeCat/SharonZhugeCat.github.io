@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漫画 - Sharon的个人网站</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>漫画搜索</h1>
+        <button id="settingsBtn" class="settings-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </svg>
+        </button>
+    </header>
+
+    <main>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="请输入漫画名称或关键词...">
+            <button id="searchBtn">搜索</button>
+        </div>
+        <div class="search-results" id="searchResults">
+            <!-- 搜索结果将在这里动态显示 -->
+        </div>
+        <div class="chapter-list" id="chapterList">
+            <div class="navigation-bar" id="navigationBar">
+                <span class="nav-item" data-nav="search">搜索</span>
+            </div>
+            <div class="chapter-header">
+                <img id="mangaCover" class="manga-detail-cover">
+                <div class="manga-detail-info">
+                    <h2 id="mangaTitle"></h2>
+                    <div id="mangaAuthor" class="manga-detail-author"></div>
+                    <div id="mangaType" class="manga-detail-type"></div>
+                    <div id="mangaIntro" class="manga-detail-intro"></div>
+                </div>
+            </div>
+            <div class="chapter-grid" id="chapterGrid"></div>
+        </div>
+        <div class="manga-content" id="mangaContent">
+            <div class="navigation-bar" id="contentNavigationBar">
+                <span class="nav-item" data-nav="search">搜索</span>
+            </div>
+            <div class="content-header">
+                <button id="backToChapters" class="back-btn">返回章节列表</button>
+                <h2 id="chapterTitle"></h2>
+            </div>
+            <div class="image-container" id="imageContainer">
+                <!-- 图片将在这里动态加载 -->
+            </div>
+        </div>
+    </main>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>主题设置</h2>
+            <div class="theme-options">
+                <button data-theme="light" class="theme-btn active">浅云白</button>
+                <button data-theme="dark" class="theme-btn">深墨染</button>
+                <button data-theme="blue" class="theme-btn">清新蓝</button>
+                <button data-theme="green" class="theme-btn">自然绿</button>
+                <button data-theme="yellow" class="theme-btn">温暖黄</button>
+                <button data-theme="pink" class="theme-btn">浪漫粉</button>
+                <button data-theme="purple" class="theme-btn">宁静紫</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
