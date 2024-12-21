@@ -6,6 +6,7 @@
         <meta name="referrer" content="no-referrer">
         <title>图片视频解析工具 - Sharon的个人网站</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap">
         <style>
             @font-face {
                 font-family: "YiDianMIngTi";
@@ -22,7 +23,7 @@
             * {
                 box-sizing: border-box;
                 transition: all 0.3s ease;
-                font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+                font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
             }
     
             body {
@@ -49,16 +50,9 @@
                 animation: containerAppear 0.5s ease-out;
             }
     
-            h1 {
-                text-align: center;
-                background: linear-gradient(120deg, rgb(133, 62, 255), #f76cc6 30%, rgb(255, 255, 255) 60%);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                font-size: 2.5em;
-                margin-bottom: 20px;
-                font-family: "title", sans-serif;
-                font-weight: 600;
+            h1, h2 {
+                font-family: 'Noto Serif SC', serif;
+                font-weight: 700;
             }
     
             .input-section {
@@ -309,6 +303,7 @@
                 border-radius: 10px;
                 margin: 15px 0;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                object-fit: cover;
             }
     
             .video-result h2 {
@@ -344,6 +339,7 @@
                 text-align: center;
                 animation: fadeIn 0.3s ease;
                 backdrop-filter: blur(5px);
+                font-weight: 500;
             }
     
             .message-box.error {
@@ -365,6 +361,11 @@
                     opacity: 1;
                     transform: translateY(0);
                 }
+            }
+    
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
             }
         </style>
     </head>
@@ -395,7 +396,7 @@
         function processImageUrl(url) {
             // 使用encodeURIComponent处理完整URL，确保特殊字符被正确编码
             try {
-                // 分割URL，处��感叹号后的部分
+                // 分割URL，处理感叹号后的部分
                 const [baseUrl, params] = url.split('!');
                 if (params) {
                     return `${encodeURIComponent(baseUrl)}!${encodeURIComponent(params)}`;
@@ -426,21 +427,33 @@
                 const response = await axios.get(`${baseUrl}?url=${encodeURIComponent(url)}`);
                 const data = response.data;
 
-                if (data.code === 200) {
+                if (data.code === 200 && data.data) {
                     if (type === 'image') {
-                        displayImages(data.data);
-                        showMessage('解析成功！', 'success');
+                        if (data.data.images && data.data.images.length > 0) {
+                            displayImages(data.data);
+                            showMessage('解析成功！', 'success');
+                        } else {
+                            showMessage('解析失败：未找到图片', 'error');
+                            resultSection.innerHTML = '<div class="message-box error">未找到图片</div>';
+                        }
                     } else {
-                        displayVideo(data.data);
-                        showMessage('解析成功！', 'success');
+                        if (data.data.url) {
+                            displayVideo(data.data);
+                            showMessage('解析成功！', 'success');
+                        } else {
+                            showMessage('解析失败：未找到视频链接', 'error');
+                            resultSection.innerHTML = '<div class="message-box error">未找到视频链接</div>';
+                        }
                     }
                 } else {
-                    showMessage('解析失败：' + data.msg, 'error');
-                    resultSection.innerHTML = '';
+                    const errorMsg = data.msg || '未知错误';
+                    showMessage('解析失败：' + errorMsg, 'error');
+                    resultSection.innerHTML = `<div class="message-box error">${errorMsg}</div>`;
                 }
             } catch (error) {
-                showMessage('解析出错：' + error.message, 'error');
-                resultSection.innerHTML = '';
+                const errorMsg = error.message || '未知错误';
+                showMessage('解析出错：' + errorMsg, 'error');
+                resultSection.innerHTML = `<div class="message-box error">${errorMsg}</div>`;
             }
         }
 
@@ -484,17 +497,23 @@
             const cover = data.cover || '';
             const url = data.url || '';
 
+            if (!url) {
+                showMessage('解析失败：无法获取视频链接', 'error');
+                return;
+            }
+
             resultSection.innerHTML = `
                 <div class="video-result">
                     <h2>${title}</h2>
                     <p>作者：${author}</p>
                     <p>时长/发布时间：${time}</p>
-                    <img src="${cover}" 
-                        crossorigin="anonymous" 
-                        referrerpolicy="no-referrer"
-                        alt="封面" 
-                        style="max-width: 300px" 
-                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'169\\'%3E%3Crect width=\\'300\\' height=\\'169\\' fill=\\'%23ddd\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' fill=\\'%23666\\' font-size=\\'16\\'%3E封面加载失败%3C/text%3E%3C/svg%3E'">
+                    <div style="max-width: 300px; margin: 0 auto;">
+                        <img src="${cover}" 
+                            crossorigin="anonymous" 
+                            referrerpolicy="no-referrer"
+                            alt="封面" 
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'169\\'%3E%3Crect width=\\'300\\' height=\\'169\\' fill=\\'%23ddd\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' fill=\\'%23666\\' font-size=\\'16\\'%3E封面加载失败%3C/text%3E%3C/svg%3E'">
+                    </div>
                     <p>
                         <button onclick="downloadVideo('${url}', '${title}')">下载视频</button>
                     </p>
@@ -645,26 +664,6 @@
 
         function isMobileDevice() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        function displayVideo(data) {
-            const resultSection = document.getElementById('resultSection');
-            resultSection.innerHTML = `
-                <div class="video-result">
-                    <h2>${data.title}</h2>
-                    <p>作者：${data.author}</p>
-                    <p>时长/发布时间：${data.time}</p>
-                    <img src="${data.cover}" 
-                        crossorigin="anonymous" 
-                        referrerpolicy="no-referrer"
-                        alt="封面" 
-                        style="max-width: 300px" 
-                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'169\\'%3E%3Crect width=\\'300\\' height=\\'169\\' fill=\\'%23ddd\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' fill=\\'%23666\\' font-size=\\'16\\'%3E封面加载失败%3C/text%3E%3C/svg%3E'">
-                    <p>
-                        <button onclick="downloadVideo('${data.url}', '${data.title}')">下载视频</button>
-                    </p>
-                </div>
-            `;
         }
 
         function clearInput() {
