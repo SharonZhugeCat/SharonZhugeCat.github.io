@@ -6,10 +6,24 @@
     <title>Sharon的个人网站</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* 修复滑动和溢出问题 */
+        body {
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .content {
+            min-height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* 增加 iOS 滚动流畅度 */
+        }
+
         /* 添加移动端样式 */
         @media (max-width: 768px) {
             .content {
                 padding: 10px;
+                height: auto;
             }
 
             .main-container {
@@ -17,97 +31,61 @@
                 max-width: 95%;
                 margin: 10px;
                 padding: 15px;
+                height: auto;
+                overflow: visible;
             }
 
-            .left-section {
+            /* 优化移动端文字显示 */
+            #daily-sentence {
+                font-size: 14px;
                 padding: 10px;
+                word-break: break-word;
+                line-height: 1.4;
+                max-height: 200px;
+                overflow-y: auto;
             }
 
-            .avatar {
-                width: 100px;
-                height: 100px;
-            }
-
-            .center-section {
-                margin: 10px 0;
-            }
-
-            .new-right-section {
-                width: 100%;
-            }
-
-            .welcome {
-                font-size: 24px;
-            }
-
-            .gradientText {
-                font-size: 32px;
-            }
-
+            /* 优化按钮样式 */
             .links {
                 flex-direction: column;
                 gap: 10px;
+                padding: 0 10px;
             }
 
             .links a {
                 width: 100%;
                 text-align: center;
+                white-space: normal; /* 允许按钮文字换行 */
+                height: auto;
+                padding: 8px 15px;
             }
 
+            /* 优化音乐播放器布局 */
             .music-player {
                 flex-direction: column;
                 align-items: center;
                 gap: 10px;
+                padding: 0 10px;
             }
 
             .play-pause-btn {
                 width: 100%;
+                max-width: 200px;
             }
 
-            .volume-control {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                margin-top: 10px;
-            }
-
-            .volume-btn {
-                width: auto;
-                margin-right: 10px;
-            }
-
-            .volume-slider {
-                position: relative;
-                transform: none;
-                left: 0;
-                width: 150px;
-                display: block;
-            }
-
-            .volume-control:hover .volume-slider {
-                transform: none;
-            }
-
-            #time-greeting {
-                margin-top: 15px;
-            }
-
-            #current-time {
-                font-size: 28px;
-            }
-
-            #greeting {
-                font-size: 18px;
-            }
-
+            /* 优化天气显示 */
             .weather-container {
                 margin-top: 15px;
                 padding: 15px;
+                font-size: 14px;
             }
 
-            #daily-sentence {
-                font-size: 16px;
-                padding: 10px;
+            /* 优化头像加载 */
+            .avatar {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                loading: lazy;
             }
         }
 
@@ -319,7 +297,40 @@
                 dailySentenceElement.style.fontSize = '16px';
                 dailySentenceElement.style.lineHeight = '1.4';
             }
+
+            // 图片加载优化
+            const avatar = document.querySelector('.avatar');
+            if (avatar) {
+                // 添加加载占位符
+                avatar.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                
+                // 图片加载完成后移除占位符
+                avatar.onload = function() {
+                    this.style.backgroundColor = 'transparent';
+                };
+
+                // 图片加载失败处理
+                avatar.onerror = function() {
+                    this.src = 'Assests/default-avatar.png'; // 设置默认头像
+                };
+            }
+
+            // 优化移动端长句子显示
+            if (isMobileDevice()) {
+                const dailySentence = document.getElementById('daily-sentence');
+                if (dailySentence) {
+                    const text = dailySentence.textContent;
+                    if (text.length > 100) { // 如果文字太长
+                        dailySentence.style.fontSize = '12px'; // 缩小字体
+                    }
+                }
+            }
         };
+
+        // 添加触摸滑动支持
+        document.addEventListener('touchmove', function(e) {
+            e.stopPropagation();
+        }, { passive: true });
     </script>
 </body>
 </html>
