@@ -18,7 +18,8 @@
         .container {
             max-width: 1600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 10px;
+            box-sizing: border-box;
         }
 
         header {
@@ -148,9 +149,12 @@
             align-items: center;
             gap: 15px;
             padding: 10px;
+            margin: 0 5px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             transition: all 0.3s ease;
+            box-sizing: border-box;
+            width: calc(100% - 10px);
         }
 
         .song-item:hover {
@@ -291,7 +295,7 @@
 
             .main-content {
                 grid-template-columns: 1fr;
-                padding: 15px;
+                padding: 15px 10px;
                 margin: 0;
                 width: 100%;
                 box-sizing: border-box;
@@ -307,8 +311,10 @@
 
             .song-list {
                 max-height: 300px;
-                padding: 5px;
-                margin: -5px;
+                padding: 5px 0;
+                margin: 0;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .play-mode-container {
@@ -318,14 +324,14 @@
             }
 
             body {
-                padding-bottom: 160px;
+                padding-bottom: 300px;
             }
 
             .player-controls-inner {
                 flex-wrap: wrap;
                 gap: 10px;
                 width: 100%;
-                padding: 0 10px;
+                padding: 0 15px;
                 box-sizing: border-box;
                 margin: 10px 0;
             }
@@ -340,11 +346,17 @@
             .progress-container {
                 width: 100%;
                 margin: 10px 0;
+                min-width: unset;
+                padding: 0 5px;
+                box-sizing: border-box;
             }
 
             .volume-control {
                 width: 100%;
                 margin: 10px 0;
+                min-width: unset;
+                padding: 0 5px;
+                box-sizing: border-box;
             }
 
             .play-mode-container {
@@ -513,7 +525,7 @@
                 <div class="platform-select">
                     <button class="platform-btn active" data-platform="netease">网易云音乐</button>
                     <button class="platform-btn" data-platform="kugou">酷狗音乐</button>
-                    <button class="platform-btn" data-platform="migu">咪咕音乐</button>
+                    <button class="platform-btn" data-platform="bodian">波点音乐</button>
                 </div>
 
                 <div class="search-container">
@@ -682,7 +694,7 @@
             const platformUrls = {
                 'netease': 'https://api.xingzhige.com/API/NetEase_CloudMusic_new/',
                 'kugou': 'https://api.xingzhige.com/API/Kugou_GN_new/',
-                'migu': 'https://api.xingzhige.com/API/MiGu/'
+                'bodian': 'https://api.xingzhige.com/API/Kuwo_BD_new/'
             };
 
             try {
@@ -698,7 +710,7 @@
             const platformUrls = {
                 'netease': 'https://api.xingzhige.com/API/NetEase_CloudMusic_new/',
                 'kugou': 'https://api.xingzhige.com/API/Kugou_GN_new/',
-                'migu': 'https://api.xingzhige.com/API/MiGu/'
+                'bodian': 'https://api.xingzhige.com/API/Kuwo_BD_new/'
             };
 
             try {
