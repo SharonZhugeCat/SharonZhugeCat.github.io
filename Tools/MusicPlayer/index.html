@@ -104,8 +104,6 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            width: 100%;
-            box-sizing: border-box;
         }
 
         input[type="text"] {
@@ -292,20 +290,19 @@
 
         @media screen and (max-width: 768px) {
             body {
-                padding: 0;
+                padding: 10px;
                 margin: 0;
-                min-height: 100vh;
             }
 
             .container {
-                padding: 10px 5px;
+                padding: 5px;
                 width: 100%;
-                margin-bottom: 180px;
+                margin-bottom: 160px;
             }
 
             .main-content {
                 grid-template-columns: 1fr;
-                padding: 10px 5px;
+                padding: 10px;
                 width: 100%;
                 margin: 0;
                 overflow: hidden;
@@ -322,12 +319,11 @@
 
             .play-mode-container {
                 position: static;
-                order: 1;
+                order: 2;
                 margin: 5px auto;
                 min-width: unset;
                 display: flex;
                 align-items: center;
-                justify-content: center;
                 gap: 5px;
             }
 
@@ -348,7 +344,12 @@
                 display: flex;
                 justify-content: center;
                 gap: 25px;
-                padding: 10px 0;
+                margin: 10px 0;
+            }
+
+            .control-buttons .control-btn {
+                transform: scale(1.2);
+                padding: 10px;
             }
 
             .progress-container {
@@ -358,133 +359,15 @@
             }
 
             .volume-control {
-                order: 2;
-                width: 100%;
-                max-width: 200px;
-                margin: 10px auto;
+                display: none;
             }
 
             .now-playing-info {
                 order: -1;
                 width: 100%;
                 text-align: center;
-                margin-bottom: 10px;
-            }
-
-            .platform-select {
-                gap: 8px;
-                padding: 0 10px;
-                margin-bottom: 15px;
-            }
-
-            .platform-btn {
-                padding: 6px 12px;
-                font-size: 13px;
-                min-width: auto;
-                flex: 1;
-            }
-
-            .search-container {
-                padding: 0 10px;
-                margin-bottom: 15px;
-                flex-wrap: nowrap;
-            }
-
-            .search-btn {
-                padding: 8px 15px;
-                white-space: nowrap;
-                font-size: 14px;
-            }
-
-            .song-item {
-                padding: 8px;
-                gap: 8px;
-                margin: 0 0 8px 0;
-                border-radius: 8px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .control-btn {
-                padding: 10px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .player-controls {
-                padding: 15px 0;
-                background: rgba(0, 0, 0, 0.95);
-                height: auto;
-                bottom: 0;
-                position: fixed;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .player-controls-inner {
-                width: 95%;
-                padding: 0 10px;
-                gap: 12px;
-                box-sizing: border-box;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .now-playing-info {
-                width: 100%;
-                text-align: center;
-                padding: 5px 0;
-                order: 1;
-            }
-
-            .progress-container {
-                width: 100%;
-                order: 2;
-                margin: 8px 0;
-                min-width: unset;
-            }
-
-            .control-buttons {
-                width: 100%;
-                order: 3;
-                display: flex;
-                justify-content: center;
-                gap: 30px;
-                padding: 10px 0;
-            }
-
-            .play-mode-container {
-                position: absolute;
-                left: 15px;
-                bottom: 15px;
-            }
-
-            .control-btn {
-                width: 40px;
-                height: 40px;
-                padding: 6px;
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .control-btn svg {
-                width: 24px;
-                height: 24px;
-            }
-
-            .volume-control {
-                display: none;
+                margin: 5px 0;
+                font-size: 0.9em;
             }
         }
 
@@ -586,40 +469,107 @@
             height: 40px;
         }
 
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+        .platform-select {
+            gap: 8px;
+            padding: 0 5px;
+        }
+
+        .platform-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+            min-width: 80px;
+        }
+
+        .search-container {
+            padding: 0 5px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .song-item {
+            padding: 8px 12px;
+            gap: 10px;
+        }
+
+        .song-controls {
             gap: 15px;
         }
 
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #f76cc6;
-            animation: spin 1s linear infinite;
+        .control-btn {
+            padding: 8px;
+            transform: scale(1.1);
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .player-controls {
+            padding: 15px 0;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .player-controls-inner {
+            width: 95%;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .control-buttons {
+            order: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 10px 0;
+        }
+
+        .control-buttons .control-btn {
+            transform: scale(1.2);
+            padding: 10px;
+        }
+
+        .progress-container {
+            order: 0;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .play-mode-container {
+            position: static;
+            order: 2;
+            margin: 5px auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .now-playing-info {
+            order: -1;
+            width: 100%;
+            text-align: center;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .volume-control {
+            display: none;
+        }
+
+        .pagination {
+            margin-top: 15px;
+            gap: 15px;
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <div>加载中...</div>
-    </div>
     <div class="container">
         <header>
             <h1>音乐播放器</h1>
@@ -814,32 +764,24 @@
             };
 
             try {
+                // 根据不同平台构建不同的请求参数
                 let url = platformUrls[currentPlatform];
                 switch(currentPlatform) {
                     case 'kugou':
-                        url += `?name=${encodeURIComponent(song.songname)}&hash=${song.FileHash}`;
+                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}&hash=${song.FileHash}`;
                         break;
                     case 'kuwo':
-                        url += `?name=${encodeURIComponent(song.songname)}&rid=${song.rid}`;
+                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}&rid=${song.rid}`;
                         break;
                     default: // 网易云音乐
                         url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}`;
                 }
 
-                console.log('请求URL:', url);
                 const response = await fetch(url);
                 const data = await response.json();
                 console.log('API返回数据:', data);
-
-                // 针对不同平台处理返回数据
-                if (data.code === 0 || data.code === 200) {
-                    if (currentPlatform === 'kugou' && data.data?.play_url) {
-                        return data.data.play_url;
-                    } else if (currentPlatform === 'kuwo' && data.data?.url) {
-                        return data.data.url;
-                    } else if (data.data?.src) {
-                        return data.data.src;
-                    }
+                if ((data.code === 0 || data.code === 200) && data.data && data.data.src) {
+                    return data.data.src;
                 }
                 throw new Error(data.msg || '获取音乐链接失败');
             } catch (error) {
@@ -912,33 +854,20 @@
         }
 
         async function playSong(song, index) {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.style.display = 'flex';
-            
-            try {
-                console.log('播放歌曲:', song);
-                const url = await getSongUrl(song, index);
-                if (url) {
-                    // 创建新的Audio对象以确保URL更新
-                    audioPlayer.src = '';
+            console.log('播放歌曲:', song, index);
+            const url = await getSongUrl(song, index);
+            console.log('获取到的URL:', url);
+            if (url) {
+                try {
                     audioPlayer.src = url;
-                    audioPlayer.load();
-                    const playPromise = audioPlayer.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.error('播放失败:', error);
-                            showMessage('播放失败，请尝试其他歌曲');
-                        });
-                    }
+                    audioPlayer.play();
                     updatePlayButton(true);
                     currentSong = song;
                     updateNowPlaying(song);
+                } catch (error) {
+                    console.error('播放失败:', error);
+                    showMessage('播放失败，请尝试其他歌曲');
                 }
-            } catch (error) {
-                console.error('播放失败:', error);
-                showMessage('播放失败，请尝试其他歌曲');
-            } finally {
-                loadingOverlay.style.display = 'none';
             }
         }
 
@@ -1043,7 +972,7 @@
                 '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
         }
 
-        // 进度条更新
+        // 进度条��新
         audioPlayer.addEventListener('timeupdate', () => {
             const progress = document.getElementById('progress');
             const currentTime = document.getElementById('currentTime');
