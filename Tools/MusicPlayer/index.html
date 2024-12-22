@@ -423,64 +423,68 @@
                 bottom: 0;
                 position: fixed;
                 width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             .player-controls-inner {
                 width: 95%;
                 padding: 0 10px;
-                gap: 8px;
+                gap: 12px;
                 box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .now-playing-info {
+                width: 100%;
+                text-align: center;
+                padding: 5px 0;
+                order: 1;
             }
 
             .progress-container {
                 width: 100%;
-                margin: 5px 0;
-                grid-area: progress;
+                order: 2;
+                margin: 8px 0;
                 min-width: unset;
-                gap: 5px;
             }
 
             .control-buttons {
-                grid-area: controls;
+                width: 100%;
+                order: 3;
                 display: flex;
                 justify-content: center;
-                gap: 20px;
-                padding: 5px 0;
-            }
-
-            .control-btn {
-                width: 32px;
-                height: 32px;
-                padding: 6px;
+                gap: 30px;
+                padding: 10px 0;
             }
 
             .play-mode-container {
-                grid-area: mode;
-                margin: 0;
-                padding-left: 5px;
+                position: absolute;
+                left: 15px;
+                bottom: 15px;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                padding: 6px;
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: 50%;
+                display: flex;
                 align-items: center;
+                justify-content: center;
             }
 
-            .mode-text {
-                font-size: 12px;
-                margin-left: 2px;
+            .control-btn svg {
+                width: 24px;
+                height: 24px;
             }
 
-            .song-list {
-                margin: 0;
-                padding: 5px 10px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .library-section {
-                padding: 0 10px;
-                margin-bottom: 20px;
-            }
-
-            .upload-area {
-                margin: 10px 0;
-                padding: 15px;
+            .volume-control {
+                display: none;
             }
         }
 
@@ -810,24 +814,32 @@
             };
 
             try {
-                // 根据不同平台构建不同的请求参数
                 let url = platformUrls[currentPlatform];
                 switch(currentPlatform) {
                     case 'kugou':
-                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}&hash=${song.FileHash}`;
+                        url += `?name=${encodeURIComponent(song.songname)}&hash=${song.FileHash}`;
                         break;
                     case 'kuwo':
-                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}&rid=${song.rid}`;
+                        url += `?name=${encodeURIComponent(song.songname)}&rid=${song.rid}`;
                         break;
                     default: // 网易云音乐
                         url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}`;
                 }
 
+                console.log('请求URL:', url);
                 const response = await fetch(url);
                 const data = await response.json();
                 console.log('API返回数据:', data);
-                if ((data.code === 0 || data.code === 200) && data.data && data.data.src) {
-                    return data.data.src;
+
+                // 针对不同平台处理返回数据
+                if (data.code === 0 || data.code === 200) {
+                    if (currentPlatform === 'kugou' && data.data?.play_url) {
+                        return data.data.play_url;
+                    } else if (currentPlatform === 'kuwo' && data.data?.url) {
+                        return data.data.url;
+                    } else if (data.data?.src) {
+                        return data.data.src;
+                    }
                 }
                 throw new Error(data.msg || '获取音乐链接失败');
             } catch (error) {
@@ -904,12 +916,20 @@
             loadingOverlay.style.display = 'flex';
             
             try {
-                console.log('播放歌曲:', song, index);
+                console.log('播放歌曲:', song);
                 const url = await getSongUrl(song, index);
-                console.log('获取到的URL:', url);
                 if (url) {
+                    // 创建新的Audio对象以确保URL更新
+                    audioPlayer.src = '';
                     audioPlayer.src = url;
-                    audioPlayer.play();
+                    audioPlayer.load();
+                    const playPromise = audioPlayer.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error('播放失败:', error);
+                            showMessage('播放失败，请尝试其他歌曲');
+                        });
+                    }
                     updatePlayButton(true);
                     currentSong = song;
                     updateNowPlaying(song);
