@@ -150,7 +150,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 10px;
+            padding: 8px;
             margin: 0;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
@@ -386,6 +386,12 @@
 
             .song-item {
                 padding: 8px;
+                gap: 8px;
+            }
+
+            .song-cover {
+                width: 40px;
+                height: 40px;
             }
 
             .song-controls {
@@ -396,9 +402,42 @@
                 padding: 5px;
             }
 
-            .song-cover {
-                width: 40px;
-                height: 40px;
+            .player-controls-inner {
+                flex-direction: column;
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .control-buttons {
+                order: 1;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                width: 100%;
+            }
+
+            .progress-container {
+                order: 2;
+                min-width: unset;
+                width: 100%;
+            }
+
+            .volume-control {
+                order: 3;
+                width: 100%;
+            }
+
+            .now-playing-info {
+                order: 0;
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+            body {
+                padding-bottom: 280px;
             }
         }
 
@@ -555,13 +594,39 @@
         .player-controls-inner > * {
             transition: opacity 0.3s ease;
         }
+
+        /* 修改搜索相关样式 */
+        @media screen and (max-width: 768px) {
+            .search-container {
+                padding: 0;
+            }
+
+            .search-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            input[type="text"] {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .platform-select {
+                justify-content: center;
+            }
+
+            .platform-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>音乐播放器</h1>
-            <p>本地音乐库 + 在线音乐搜索</p>
+            <p>本地音乐库 + 在线音乐搜索。欢迎使用！</p>
         </header>
 
         <div class="main-content">
@@ -650,7 +715,7 @@
         </div>
     </div>
 
-    <!-- 添���加载模态窗口 -->
+    <!-- 添加加载模态窗口 -->
     <div class="loading-modal" id="loadingModal">
         <div class="loading-spinner"></div>
     </div>
@@ -741,16 +806,29 @@
             document.getElementById('loadingModal').style.display = 'none';
         }
 
+        // 添加搜索防抖
+        let searchTimeout;
         async function searchMusic() {
+            clearTimeout(searchTimeout);
             showLoading();
-            const keyword = document.getElementById('searchInput').value.trim();
-            if (!keyword) {
-                hideLoading();
-                return;
-            }
-            currentPage = 1;
-            await fetchSearchResults(keyword, currentPage);
-            hideLoading();
+            
+            searchTimeout = setTimeout(async () => {
+                const keyword = document.getElementById('searchInput').value.trim();
+                if (!keyword) {
+                    hideLoading();
+                    return;
+                }
+                
+                try {
+                    currentPage = 1;
+                    await fetchSearchResults(keyword, currentPage);
+                } catch (error) {
+                    console.error('搜索失败:', error);
+                    showMessage('搜索失败，请重试');
+                } finally {
+                    hideLoading();
+                }
+            }, 300);
         }
 
         async function fetchSearchResults(keyword, page) {
@@ -857,23 +935,37 @@
         async function playSong(song, index) {
             showLoading();
             console.log('播放歌曲:', song, index);
-            const url = await getSongUrl(song, index);
-            console.log('获取到的URL:', url);
-            if (url) {
-                audioPlayer.src = url;
-                try {
-                    audioPlayer.play();
-                    updatePlayButton(true);
-                    currentSong = song;
-                    updateNowPlaying(song);
-                } catch (error) {
-                    console.error('播放失败:', error);
-                    showMessage('播放失败，请重试');
+            try {
+                const url = await getSongUrl(song, index);
+                console.log('获取到的URL:', url);
+                if (url) {
+                    audioPlayer.src = url;
+                    // 添加播放错误处理
+                    const playPromise = audioPlayer.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            updatePlayButton(true);
+                            currentSong = song;
+                            updateNowPlaying(song);
+                        }).catch(error => {
+                            console.error('播放失败:', error);
+                            // 尝试使用备用播放方法
+                            audioPlayer.load();
+                            audioPlayer.play().catch(err => {
+                                console.error('备用播放也失败:', err);
+                                showMessage('播放失败，请重试');
+                            });
+                        });
+                    }
+                } else {
+                    showMessage('无法获取音乐链接');
                 }
-            } else {
-                showMessage('无法获取音乐链接');
+            } catch (error) {
+                console.error('播放出错:', error);
+                showMessage('播放失败，请重试');
+            } finally {
+                hideLoading();
             }
-            hideLoading();
         }
 
         function saveLibrary() {
@@ -1134,7 +1226,7 @@
             }
         });
 
-        // 修改进度条相关代��
+        // 修改进度条相关代
         const progressBar = document.getElementById('progressBar');
         progressBar.addEventListener('click', (e) => {
             const rect = progressBar.getBoundingClientRect();
@@ -1253,6 +1345,25 @@
 
         // 在折叠状态改变时保存
         collapseBtn.addEventListener('click', saveCollapseState);
+
+        // 添加提示消息功能
+        function showMessage(msg) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 9999;
+            `;
+            messageDiv.textContent = msg;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 2000);
+        }
     </script>
 </body>
 </html>
