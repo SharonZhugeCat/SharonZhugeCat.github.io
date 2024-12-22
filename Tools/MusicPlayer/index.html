@@ -534,35 +534,22 @@
             border-radius: 15px;
             cursor: pointer;
             font-size: 12px;
-            display: none; /* 默认隐藏 */
-            z-index: 2000; /* 确保按钮始终在最上层 */
+            display: block;
+            z-index: 2000;
         }
 
         @media screen and (max-width: 768px) {
-            .collapse-btn {
-                display: block; /* 只在移动端显示 */
-            }
-
             .player-controls.collapsed {
                 height: 80px;
                 overflow: hidden;
             }
 
-            .player-controls.collapsed .player-controls-inner > *:not(.now-playing-info):not(.control-buttons) {
-                display: none;
-            }
-
-            /* 确保折叠按钮��终可见 */
+            /* 移动端折叠时的按钮位置 */
             .player-controls.collapsed .collapse-btn {
-                display: block;
                 position: fixed;
-                bottom: 90px; /* 调整位置，确保不会被播放器遮挡 */
+                bottom: 90px;
                 right: 10px;
                 top: auto;
-            }
-
-            .player-controls.collapsed .now-playing-info {
-                margin-bottom: 0;
             }
         }
 
@@ -697,7 +684,7 @@
         let playlist = [];
         let currentIndex = 0;
 
-        // 平台切换
+        // 平台切���
         document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
@@ -811,11 +798,14 @@
             };
 
             try {
+                const searchInput = document.getElementById('searchInput');
+                const keyword = searchInput.value.trim();
                 const params = new URLSearchParams({
-                    name: song.songname,
+                    name: keyword || song.songname,
                     n: index + 1,
                     type: currentPlatform === 'bodian' ? 'kuwo' : currentPlatform
                 });
+
                 const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
                 console.log('获取音乐URL:', data);
