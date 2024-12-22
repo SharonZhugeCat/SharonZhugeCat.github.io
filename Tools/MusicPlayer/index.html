@@ -499,76 +499,72 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 修复手机端播放条溢出 */
+        /* 修改折叠按钮样式 */
+        .collapse-btn {
+            position: absolute;
+            top: -25px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            display: none; /* 默认隐藏 */
+            z-index: 2000; /* 确保按钮始终在最上层 */
+        }
+
         @media screen and (max-width: 768px) {
-            .player-controls {
-                padding: 15px 0;
-            }
-
-            .player-controls-inner {
-                padding: 0 10px;
-                margin: 5px 0;
-                position: relative;
-            }
-
-            /* 折叠按钮样式 */
             .collapse-btn {
-                position: absolute;
-                top: -30px;
-                right: 10px;
-                background: rgba(0, 0, 0, 0.8);
-                border: none;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 15px;
-                cursor: pointer;
-                font-size: 12px;
+                display: block; /* 只在移动端显示 */
+            }
+
+            .player-controls.collapsed {
+                height: 80px;
+                overflow: hidden;
+            }
+
+            .player-controls.collapsed .player-controls-inner > *:not(.now-playing-info):not(.control-buttons) {
                 display: none;
             }
 
-            /* 在移动端显示折叠按钮 */
-            @media screen and (max-width: 768px) {
-                .collapse-btn {
-                    display: block;
-                }
-
-                .player-controls.collapsed {
-                    height: 80px;
-                    overflow: hidden;
-                }
-
-                .player-controls.collapsed .player-controls-inner > *:not(.now-playing-info):not(.control-buttons) {
-                    display: none;
-                }
-
-                .player-controls.collapsed .now-playing-info {
-                    margin-bottom: 0;
-                }
+            /* 确保折叠按钮始终可见 */
+            .player-controls.collapsed .collapse-btn {
+                display: block;
+                position: fixed;
+                bottom: 90px; /* 调整位置，确保不会被播放器遮挡 */
+                right: 10px;
+                top: auto;
             }
 
-            /* 调整内部元素间距和大小 */
-            .progress-container,
-            .volume-control {
-                padding: 0;
-                margin: 8px 0;
-                width: calc(100% - 10px);
-                margin-left: 5px;
+            .player-controls.collapsed .now-playing-info {
+                margin-bottom: 0;
             }
+        }
 
-            .control-buttons {
-                gap: 15px;
-                margin: 5px 0;
-            }
+        /* 调整内部元素间距和大小 */
+        .progress-container,
+        .volume-control {
+            padding: 0;
+            margin: 8px 0;
+            width: calc(100% - 10px);
+            margin-left: 5px;
+        }
 
-            .now-playing-info {
-                padding: 0 5px;
-                margin-bottom: 5px;
-            }
+        .control-buttons {
+            gap: 15px;
+            margin: 5px 0;
+        }
 
-            .play-mode-container {
-                padding: 0 5px;
-                margin: 5px 0;
-            }
+        .now-playing-info {
+            padding: 0 5px;
+            margin-bottom: 5px;
+        }
+
+        .play-mode-container {
+            padding: 0 5px;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -612,12 +608,12 @@
         </div>
 
         <div class="player-controls">
-            <button class="collapse-btn" id="collapseBtn">
+            <div class="collapse-btn" id="collapseBtn">
                 <span class="collapse-text">收起</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="collapse-icon">
                     <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
                 </svg>
-            </button>
+            </div>
             <div class="player-controls-inner">
                 <div class="play-mode-container">
                     <button class="play-mode" id="playMode">
@@ -799,7 +795,7 @@
                 });
                 const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
-                console.log('API返回数���:', data);
+                console.log('API返回数据:', data);
                 if (data.code === 0 && data.data.src) {
                     return data.data.src;
                 }
@@ -1093,7 +1089,7 @@
                 library.forEach(song => {
                     if (song.isLocal) {
                         song.cover = 'default-cover.jpg';
-                        // 从 Base64 字符串恢复 Blob URL
+                        // 从 Base64 字符���恢复 Blob URL
                         if (song.src && song.src.startsWith('data:')) {
                             const blob = dataURItoBlob(song.src);
                             song.src = URL.createObjectURL(blob);
