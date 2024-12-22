@@ -79,6 +79,7 @@
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .platform-btn {
@@ -90,6 +91,8 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
+            min-width: 100px;
+            text-align: center;
         }
 
         .platform-btn.active {
@@ -294,6 +297,7 @@
             .container {
                 padding: 5px;
                 width: 100%;
+                margin-bottom: 160px;
             }
 
             .main-content {
@@ -301,6 +305,7 @@
                 padding: 10px;
                 width: 100%;
                 margin: 0;
+                overflow: hidden;
             }
 
             .sidebar {
@@ -317,6 +322,10 @@
                 order: 1;
                 margin: 5px auto;
                 min-width: unset;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
             }
 
             body {
@@ -335,12 +344,14 @@
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                gap: 20px;
+                gap: 25px;
+                padding: 10px 0;
             }
 
             .progress-container {
                 order: 0;
                 width: 100%;
+                margin: 5px 0;
             }
 
             .volume-control {
@@ -355,6 +366,84 @@
                 width: 100%;
                 text-align: center;
                 margin-bottom: 10px;
+            }
+
+            .platform-select {
+                gap: 8px;
+                padding: 0 5px;
+            }
+
+            .platform-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+                min-width: 80px;
+            }
+
+            .search-container {
+                padding: 0 5px;
+                margin-bottom: 15px;
+            }
+
+            .song-item {
+                padding: 8px;
+                gap: 8px;
+                margin: 0 5px 8px;
+                border-radius: 8px;
+            }
+
+            .control-btn {
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .player-controls {
+                padding: 15px 0;
+                background: rgba(0, 0, 0, 0.9);
+            }
+
+            .player-controls-inner {
+                width: 95%;
+                padding: 0 10px;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .now-playing-info {
+                order: -1;
+                width: 100%;
+                text-align: center;
+                padding: 5px 0;
+            }
+
+            .play-mode-container {
+                position: static;
+                order: 1;
+                margin: 5px auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+            }
+
+            .volume-control {
+                display: none;
+            }
+
+            .pagination {
+                margin-top: 15px;
+                padding: 10px 0;
+            }
+
+            .page-btn {
+                padding: 6px 12px;
+                font-size: 13px;
             }
         }
 
