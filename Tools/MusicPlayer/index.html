@@ -298,10 +298,8 @@
 
             .main-content {
                 grid-template-columns: 1fr;
-                padding: 15px 10px;
-                margin: 0;
-                width: 100%;
-                box-sizing: border-box;
+                padding: 15px;
+                gap: 15px;
             }
 
             .sidebar {
@@ -310,24 +308,6 @@
                 padding-right: 0;
                 padding-bottom: 15px;
                 margin-bottom: 15px;
-            }
-
-            .song-list {
-                max-height: 300px;
-                padding: 5px;
-                margin: 0;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .play-mode-container {
-                position: relative;
-                order: 1;
-                margin: 10px 0;
-            }
-
-            body {
-                padding-bottom: 300px;
             }
 
             .player-controls-inner {
@@ -349,84 +329,20 @@
             }
 
             .progress-container {
-                width: 100%;
-                margin: 10px 0;
-                min-width: unset;
-                padding: 0 5px;
-                box-sizing: border-box;
-            }
-
-            .volume-control {
-                width: 100%;
-                margin: 10px 0;
-                min-width: unset;
-                padding: 0 5px;
-                box-sizing: border-box;
-            }
-
-            .play-mode-container {
-                width: 100%;
-                justify-content: center;
-                margin: 10px 0;
-            }
-
-            .now-playing-info {
-                width: 100%;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-
-            body {
-                padding-bottom: 280px;
-            }
-
-            .search-container {
-                padding: 0;
-            }
-
-            .song-item {
-                padding: 8px;
-                gap: 8px;
-            }
-
-            .song-cover {
-                width: 40px;
-                height: 40px;
-            }
-
-            .song-controls {
-                gap: 5px;
-            }
-
-            .control-btn {
-                padding: 5px;
-            }
-
-            .player-controls-inner {
-                flex-direction: column;
-                padding: 10px;
-                gap: 10px;
-            }
-
-            .control-buttons {
-                order: 1;
-                display: flex;
-                justify-content: center;
-                gap: 20px;
-                width: 100%;
-            }
-
-            .progress-container {
                 order: 2;
-                min-width: unset;
                 width: 100%;
+                min-width: unset;
+                padding: 0 5px;
+                margin: 10px 0;
+                box-sizing: border-box;
             }
 
             .volume-control {
                 order: 3;
                 width: 100%;
+                margin: 10px 0;
+                padding: 0 5px;
+                box-sizing: border-box;
             }
 
             .now-playing-info {
@@ -628,7 +544,7 @@
     <div class="container">
         <header>
             <h1>音乐播放器</h1>
-            <p>本地音乐库 + 在线音乐搜索</p>
+            <p>本地音乐库 + 在线音乐搜索。欢迎使用！</p>
         </header>
 
         <div class="main-content">
@@ -841,34 +757,20 @@
             };
 
             try {
-                // 根据不同平台构建不同的参数
-                let params = new URLSearchParams({
+                const params = new URLSearchParams({
                     name: keyword,
                     page: page,
                     pagesize: 30
                 });
 
-                // 针对不同平台添加特定参数
-                if (currentPlatform === 'bodian') {
-                    params.append('type', 'kuwo');
-                }
-
                 const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
                 
-                // 统一数据格式
-                let formattedData = data.data;
-                if (Array.isArray(formattedData)) {
-                    formattedData = formattedData.map(song => ({
-                        songname: song.songname || song.name || song.title,
-                        name: song.name || song.artist || song.singer,
-                        cover: song.cover || song.pic || song.img,
-                        // 保存原始数据用于获取音乐URL
-                        originalData: song
-                    }));
+                if (data.code === 0 && data.data) {
+                    displaySearchResults(data.data);
+                } else {
+                    throw new Error('搜索失败');
                 }
-                
-                displaySearchResults(formattedData);
             } catch (error) {
                 console.error('搜索失败:', error);
                 showMessage('搜索失败，请重试');
@@ -888,20 +790,6 @@
                     n: index + 1
                 });
 
-                // 针对不同平台添加特定参数
-                if (currentPlatform === 'bodian') {
-                    params.append('type', 'kuwo');
-                }
-
-                // 如果有原始数据，添加到请求中
-                if (song.originalData) {
-                    if (currentPlatform === 'kugou') {
-                        params.append('hash', song.originalData.hash);
-                    } else if (currentPlatform === 'bodian') {
-                        params.append('rid', song.originalData.rid);
-                    }
-                }
-
                 const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
                 
@@ -909,7 +797,6 @@
                     return data.data.src;
                 }
                 
-                // 如果是本地音乐，返回本地源
                 if (song.src) {
                     return song.src;
                 }
