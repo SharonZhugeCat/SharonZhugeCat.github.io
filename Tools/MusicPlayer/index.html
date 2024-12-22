@@ -19,8 +19,6 @@
             max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
-            overflow-x: hidden;
-            box-sizing: border-box;
         }
 
         header {
@@ -41,14 +39,13 @@
             display: grid;
             grid-template-columns: 350px 1fr;
             gap: 20px;
+            overflow: hidden;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-sizing: border-box;
-            width: 100%;
         }
 
         .sidebar {
@@ -79,7 +76,6 @@
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            justify-content: center;
         }
 
         .platform-btn {
@@ -91,8 +87,6 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
-            min-width: 100px;
-            text-align: center;
         }
 
         .platform-btn.active {
@@ -145,9 +139,8 @@
             gap: 10px;
             max-height: 500px;
             overflow-y: auto;
-            padding: 0 5px;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 10px;
+            margin: -10px;
         }
 
         .song-item {
@@ -229,6 +222,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .progress-bar {
@@ -289,85 +283,86 @@
         }
 
         @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-                margin: 0;
-            }
-
             .container {
-                padding: 5px;
+                padding: 10px;
                 width: 100%;
-                margin-bottom: 160px;
+                box-sizing: border-box;
             }
 
             .main-content {
                 grid-template-columns: 1fr;
-                padding: 10px;
-                width: 100%;
+                padding: 15px;
                 margin: 0;
-                overflow: hidden;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .sidebar {
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                 padding-right: 0;
-                padding-bottom: 20px;
-                width: 100%;
-                box-sizing: border-box;
+                padding-bottom: 15px;
+                margin-bottom: 15px;
+            }
+
+            .song-list {
+                max-height: 300px;
+                padding: 5px;
+                margin: -5px;
             }
 
             .play-mode-container {
-                position: static;
-                order: 2;
-                margin: 5px auto;
-                min-width: unset;
-                display: flex;
-                align-items: center;
-                gap: 5px;
+                position: relative;
+                order: 1;
+                margin: 10px 0;
             }
 
             body {
-                padding-bottom: 140px;
-                overflow-x: hidden;
+                padding-bottom: 160px;
             }
 
             .player-controls-inner {
                 flex-wrap: wrap;
                 gap: 10px;
-                justify-content: center;
-            }
-
-            .control-buttons {
-                order: 1;
                 width: 100%;
-                display: flex;
-                justify-content: center;
-                gap: 25px;
+                padding: 0 10px;
+                box-sizing: border-box;
                 margin: 10px 0;
             }
 
-            .control-buttons .control-btn {
-                transform: scale(1.2);
-                padding: 10px;
+            .control-buttons {
+                width: 100%;
+                justify-content: center;
+                gap: 20px;
+                margin: 10px 0;
             }
 
             .progress-container {
-                order: 0;
                 width: 100%;
-                margin: 5px 0;
+                margin: 10px 0;
             }
 
             .volume-control {
-                display: none;
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .play-mode-container {
+                width: 100%;
+                justify-content: center;
+                margin: 10px 0;
             }
 
             .now-playing-info {
-                order: -1;
                 width: 100%;
-                text-align: center;
-                margin: 5px 0;
-                font-size: 0.9em;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+            body {
+                padding-bottom: 280px;
             }
         }
 
@@ -454,118 +449,42 @@
             gap: 10px;
         }
 
-        .song-list {
-            margin: 0;
-            padding: 5px;
+        /* 当前播放的封面样式 */
+        .now-playing-cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 15px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .song-item {
-            padding: 8px;
-            gap: 8px;
-        }
-
-        .song-cover {
-            width: 40px;
-            height: 40px;
-        }
-
-        .platform-select {
-            gap: 8px;
-            padding: 0 5px;
-        }
-
-        .platform-btn {
-            padding: 6px 12px;
-            font-size: 13px;
-            min-width: 80px;
-        }
-
-        .search-container {
-            padding: 0 5px;
-            margin-bottom: 15px;
-        }
-
-        input[type="text"] {
-            padding: 10px 15px;
-            font-size: 14px;
-        }
-
-        .song-item {
-            padding: 8px 12px;
-            gap: 10px;
-        }
-
-        .song-controls {
-            gap: 15px;
-        }
-
-        .control-btn {
-            padding: 8px;
-            transform: scale(1.1);
-        }
-
-        .player-controls {
-            padding: 15px 0;
-            background: rgba(0, 0, 0, 0.9);
-        }
-
-        .player-controls-inner {
-            width: 95%;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            padding: 0 10px;
-        }
-
-        .control-buttons {
-            order: 1;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin: 10px 0;
-        }
-
-        .control-buttons .control-btn {
-            transform: scale(1.2);
-            padding: 10px;
-        }
-
-        .progress-container {
-            order: 0;
-            width: 100%;
-            margin: 5px 0;
-        }
-
-        .play-mode-container {
-            position: static;
-            order: 2;
-            margin: 5px auto;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .now-playing-info {
-            order: -1;
-            width: 100%;
-            text-align: center;
-            margin: 5px 0;
-            font-size: 0.9em;
-        }
-
-        .volume-control {
+        /* 加载模态窗口 */
+        .loading-modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
         }
 
-        .pagination {
-            margin-top: 15px;
-            gap: 15px;
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #f76cc6;
+            animation: spin 1s linear infinite;
         }
 
-        .page-btn {
-            padding: 6px 12px;
-            font-size: 13px;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -594,7 +513,7 @@
                 <div class="platform-select">
                     <button class="platform-btn active" data-platform="netease">网易云音乐</button>
                     <button class="platform-btn" data-platform="kugou">酷狗音乐</button>
-                    <button class="platform-btn" data-platform="kuwo">波点音乐</button>
+                    <button class="platform-btn" data-platform="migu">咪咕音乐</button>
                 </div>
 
                 <div class="search-container">
@@ -645,7 +564,7 @@
                 <div class="volume-control">
                     <div class="volume-icon" onclick="toggleMute()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="volumeIcon">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z'"/>
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                         </svg>
                     </div>
                     <div class="volume-slider" id="volumeSlider">
@@ -654,6 +573,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 添加加载模态窗口 -->
+    <div class="loading-modal" id="loadingModal">
+        <div class="loading-spinner"></div>
     </div>
 
     <script>
@@ -733,18 +657,32 @@
             return new Blob([ab], { type: mimeString });
         }
 
+        // 显示/隐藏加载模态窗口
+        function showLoading() {
+            document.getElementById('loadingModal').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingModal').style.display = 'none';
+        }
+
         async function searchMusic() {
+            showLoading();
             const keyword = document.getElementById('searchInput').value.trim();
-            if (!keyword) return;
-            currentPage = 1; // 重置页码
+            if (!keyword) {
+                hideLoading();
+                return;
+            }
+            currentPage = 1;
             await fetchSearchResults(keyword, currentPage);
+            hideLoading();
         }
 
         async function fetchSearchResults(keyword, page) {
             const platformUrls = {
                 'netease': 'https://api.xingzhige.com/API/NetEase_CloudMusic_new/',
                 'kugou': 'https://api.xingzhige.com/API/Kugou_GN_new/',
-                'kuwo': 'https://api.xingzhige.com/API/Kuwo_BD_new/'
+                'migu': 'https://api.xingzhige.com/API/MiGu/'
             };
 
             try {
@@ -760,33 +698,24 @@
             const platformUrls = {
                 'netease': 'https://api.xingzhige.com/API/NetEase_CloudMusic_new/',
                 'kugou': 'https://api.xingzhige.com/API/Kugou_GN_new/',
-                'kuwo': 'https://api.xingzhige.com/API/Kuwo_BD_new/'
+                'migu': 'https://api.xingzhige.com/API/MiGu/'
             };
 
             try {
-                // 根据不同平台构建不同的请求参数
-                let url = platformUrls[currentPlatform];
-                switch(currentPlatform) {
-                    case 'kugou':
-                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}&hash=${song.FileHash}`;
-                        break;
-                    case 'kuwo':
-                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}&rid=${song.rid}`;
-                        break;
-                    default: // 网易云音乐
-                        url += `?name=${encodeURIComponent(song.songname)}&n=${index + 1}`;
-                }
-
-                const response = await fetch(url);
+                const params = new URLSearchParams({
+                    name: song.songname,
+                    n: index + 1,
+                    type: currentPlatform
+                });
+                const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
                 console.log('API返回数据:', data);
-                if ((data.code === 0 || data.code === 200) && data.data && data.data.src) {
+                if (data.code === 0 && data.data.src) {
                     return data.data.src;
                 }
-                throw new Error(data.msg || '获取音乐链接失败');
+                throw new Error('获取音乐链接失败');
             } catch (error) {
                 console.error('获取音乐链接失败:', error);
-                showMessage(error.message);
                 return null;
             }
         }
@@ -814,14 +743,6 @@
         function createSongElement(song, index) {
             const div = document.createElement('div');
             div.className = 'song-item';
-            // 保存必要的音乐信息
-            div.dataset.songInfo = JSON.stringify({
-                songname: song.songname,
-                name: song.name,
-                FileHash: song.FileHash || '',
-                rid: song.rid || ''
-            });
-
             const songHtml = `
                 <img src="${song.cover}" class="song-cover" onerror="this.src='default-cover.jpg'">
                 <div class="song-info">
@@ -844,31 +765,25 @@
             div.innerHTML = songHtml;
             
             // 添加事件监听器
-            div.querySelector('.play-btn').addEventListener('click', () => {
-                const songInfo = JSON.parse(div.dataset.songInfo);
-                playSong(songInfo, index);
-            });
+            div.querySelector('.play-btn').addEventListener('click', () => playSong(song, index));
             div.querySelector('.add-btn').addEventListener('click', () => addToLibrary(song));
             
             return div;
         }
 
         async function playSong(song, index) {
+            showLoading();
             console.log('播放歌曲:', song, index);
             const url = await getSongUrl(song, index);
             console.log('获取到的URL:', url);
             if (url) {
-                try {
-                    audioPlayer.src = url;
-                    audioPlayer.play();
-                    updatePlayButton(true);
-                    currentSong = song;
-                    updateNowPlaying(song);
-                } catch (error) {
-                    console.error('播放失败:', error);
-                    showMessage('播放失败，请尝试其他歌曲');
-                }
+                audioPlayer.src = url;
+                audioPlayer.play();
+                updatePlayButton(true);
+                currentSong = song;
+                updateNowPlaying(song);
             }
+            hideLoading();
         }
 
         function saveLibrary() {
@@ -972,7 +887,7 @@
                 '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
         }
 
-        // 进度条��新
+        // 进度条更新
         audioPlayer.addEventListener('timeupdate', () => {
             const progress = document.getElementById('progress');
             const currentTime = document.getElementById('currentTime');
@@ -1130,14 +1045,19 @@
             const nowPlayingTitle = document.createElement('div');
             nowPlayingTitle.className = 'now-playing-info';
             nowPlayingTitle.innerHTML = `
-                <span class="song-title">${song.songname}</span>
-                <span class="song-artist">${song.name}</span>
+                <img src="${song.isLocal ? 'default-cover.jpg' : song.cover}" 
+                    class="now-playing-cover" 
+                    onerror="this.src='default-cover.jpg'">
+                <div>
+                    <span class="song-title">${song.songname}</span>
+                    <span class="song-artist">${song.name}</span>
+                </div>
             `;
             
             const oldInfo = document.querySelector('.now-playing-info');
             if (oldInfo) oldInfo.remove();
             
-            const playerControls = document.querySelector('.player-controls');
+            const playerControls = document.querySelector('.player-controls-inner');
             playerControls.insertBefore(nowPlayingTitle, playerControls.firstChild);
         }
 
