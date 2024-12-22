@@ -219,6 +219,7 @@
             align-items: center;
             gap: 20px;
             z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
         .player-controls-inner {
@@ -524,7 +525,7 @@
 
         /* 修改折叠按钮样式 */
         .collapse-btn {
-            position: absolute;
+            position: fixed;
             top: -25px;
             right: 10px;
             background: rgba(0, 0, 0, 0.8);
@@ -536,45 +537,23 @@
             font-size: 12px;
             display: block;
             z-index: 2000;
+            transition: all 0.3s ease;
+            bottom: calc(100% - 15px);
         }
 
-        @media screen and (max-width: 768px) {
-            .player-controls.collapsed {
-                height: 80px;
-                overflow: hidden;
-            }
-
-            /* 移动端折叠时的按钮位置 */
-            .player-controls.collapsed .collapse-btn {
-                position: fixed;
-                bottom: 90px;
-                right: 10px;
-                top: auto;
-            }
+        /* 折叠状态样式 */
+        .player-controls.collapsed {
+            transform: translateY(calc(100% - 80px));
         }
 
-        /* 调整内部元素间距和大小 */
-        .progress-container,
-        .volume-control {
-            padding: 0;
-            margin: 8px 0;
-            width: calc(100% - 10px);
-            margin-left: 5px;
+        /* 修改播放控制栏内容的显示/隐藏 */
+        .player-controls.collapsed .player-controls-inner > *:not(.now-playing-info):not(.control-buttons) {
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .control-buttons {
-            gap: 15px;
-            margin: 5px 0;
-        }
-
-        .now-playing-info {
-            padding: 0 5px;
-            margin-bottom: 5px;
-        }
-
-        .play-mode-container {
-            padding: 0 5px;
-            margin: 5px 0;
+        .player-controls-inner > * {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
@@ -671,7 +650,7 @@
         </div>
     </div>
 
-    <!-- 添加加载模态窗口 -->
+    <!-- 添���加载模态窗口 -->
     <div class="loading-modal" id="loadingModal">
         <div class="loading-spinner"></div>
     </div>
@@ -684,7 +663,7 @@
         let playlist = [];
         let currentIndex = 0;
 
-        // 平台切���
+        // 平台切换
         document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
@@ -798,10 +777,9 @@
             };
 
             try {
-                const searchInput = document.getElementById('searchInput');
-                const keyword = searchInput.value.trim();
+                const keyword = song.searchKeyword || song.songname;
                 const params = new URLSearchParams({
-                    name: keyword || song.songname,
+                    name: keyword,
                     n: index + 1,
                     type: currentPlatform === 'bodian' ? 'kuwo' : currentPlatform
                 });
@@ -921,6 +899,12 @@
             const songElement = document.createElement('div');
             songElement.className = 'song-item';
             
+            const songData = {
+                ...song,
+                searchKeyword: document.getElementById('searchInput').value.trim()
+            };
+            songElement.dataset.song = JSON.stringify(songData);
+
             if (song.isLocal) {
                 songElement.dataset.src = song.src;
             }
@@ -946,16 +930,36 @@
             `;
             songElement.innerHTML = songHtml;
 
-            songElement.querySelector('.play-btn').addEventListener('click', () => {
-                if (song.isLocal) {
-                    const src = song.src || songElement.dataset.src || songElement.querySelector('.play-btn').dataset.src;
-                    audioPlayer.src = src;
-                    audioPlayer.play();
+            songElement.querySelector('.play-btn').addEventListener('click', async () => {
+                const storedSong = JSON.parse(songElement.dataset.song);
+                if (storedSong.isLocal) {
+                    const src = storedSong.src || songElement.dataset.src;
+                    if (src) {
+                        audioPlayer.src = src;
+                        audioPlayer.play();
+                        updatePlayButton(true);
+                        updateNowPlaying(storedSong);
+                        currentSong = storedSong;
+                    }
                 } else {
-                    playSong(song, 0);
+                    showLoading();
+                    try {
+                        const url = await getSongUrl(storedSong, 0);
+                        if (url) {
+                            audioPlayer.src = url;
+                            audioPlayer.play();
+                            updatePlayButton(true);
+                            currentSong = storedSong;
+                            updateNowPlaying(storedSong);
+                        } else {
+                            showMessage('无法播放该音乐');
+                        }
+                    } catch (error) {
+                        console.error('播放失败:', error);
+                        showMessage('播放失败，请重试');
+                    }
+                    hideLoading();
                 }
-                updatePlayButton(true);
-                updateNowPlaying(song);
             });
 
             songElement.querySelector('.remove-btn').addEventListener('click', () => {
@@ -1065,9 +1069,11 @@
             const songList = document.getElementById('localSongList').children;
             if (songList.length === 0) return;
 
-            let currentSongElement = Array.from(songList).find(el => 
-                el.querySelector('.song-title').textContent === currentSong?.songname
-            );
+            let currentSongElement = Array.from(songList).find(el => {
+                const storedSong = JSON.parse(el.dataset.song);
+                return storedSong.songname === currentSong?.songname && 
+                       storedSong.name === currentSong?.name;
+            });
 
             let nextElement;
             if (currentSongElement) {
@@ -1088,9 +1094,11 @@
             const songList = document.getElementById('localSongList').children;
             if (songList.length === 0) return;
 
-            let currentSongElement = Array.from(songList).find(el => 
-                el.querySelector('.song-title').textContent === currentSong?.songname
-            );
+            let currentSongElement = Array.from(songList).find(el => {
+                const storedSong = JSON.parse(el.dataset.song);
+                return storedSong.songname === currentSong?.songname && 
+                       storedSong.name === currentSong?.name;
+            });
 
             let prevElement;
             if (currentSongElement) {
@@ -1126,7 +1134,7 @@
             }
         });
 
-        // 修改进度条相关代码
+        // 修改进度条相关代��
         const progressBar = document.getElementById('progressBar');
         progressBar.addEventListener('click', (e) => {
             const rect = progressBar.getBoundingClientRect();
@@ -1208,7 +1216,7 @@
             updateVolumeUI(audioPlayer.volume);
         }
 
-        // 添加折叠功能
+        // 修改折叠功能
         const collapseBtn = document.getElementById('collapseBtn');
         const playerControls = document.querySelector('.player-controls');
         let isCollapsed = false;
