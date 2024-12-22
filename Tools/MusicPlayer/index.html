@@ -99,6 +99,8 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            padding: 0 5px;
+            box-sizing: border-box;
         }
 
         input[type="text"] {
@@ -149,12 +151,12 @@
             align-items: center;
             gap: 15px;
             padding: 10px;
-            margin: 0 5px;
+            margin: 0;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             transition: all 0.3s ease;
             box-sizing: border-box;
-            width: calc(100% - 10px);
+            width: 100%;
         }
 
         .song-item:hover {
@@ -311,7 +313,7 @@
 
             .song-list {
                 max-height: 300px;
-                padding: 5px 0;
+                padding: 5px;
                 margin: 0;
                 width: 100%;
                 box-sizing: border-box;
@@ -375,6 +377,27 @@
 
             body {
                 padding-bottom: 280px;
+            }
+
+            .search-container {
+                padding: 0;
+            }
+
+            .song-item {
+                padding: 8px;
+            }
+
+            .song-controls {
+                gap: 5px;
+            }
+
+            .control-btn {
+                padding: 5px;
+            }
+
+            .song-cover {
+                width: 40px;
+                height: 40px;
             }
         }
 
@@ -529,7 +552,7 @@
                 display: none;
             }
 
-            /* 确保折叠按钮始终可见 */
+            /* 确保折叠按钮��终可见 */
             .player-controls.collapsed .collapse-btn {
                 display: block;
                 position: fixed;
@@ -791,17 +814,23 @@
                 const params = new URLSearchParams({
                     name: song.songname,
                     n: index + 1,
-                    type: currentPlatform
+                    type: currentPlatform === 'bodian' ? 'kuwo' : currentPlatform
                 });
                 const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
-                console.log('API返回数据:', data);
+                console.log('获取音乐URL:', data);
                 if (data.code === 0 && data.data.src) {
                     return data.data.src;
+                }
+                if (song.src) {
+                    return song.src;
                 }
                 throw new Error('获取音乐链接失败');
             } catch (error) {
                 console.error('获取音乐链接失败:', error);
+                if (song.src) {
+                    return song.src;
+                }
                 return null;
             }
         }
@@ -864,10 +893,17 @@
             console.log('获取到的URL:', url);
             if (url) {
                 audioPlayer.src = url;
-                audioPlayer.play();
-                updatePlayButton(true);
-                currentSong = song;
-                updateNowPlaying(song);
+                try {
+                    audioPlayer.play();
+                    updatePlayButton(true);
+                    currentSong = song;
+                    updateNowPlaying(song);
+                } catch (error) {
+                    console.error('播放失败:', error);
+                    showMessage('播放失败，请重试');
+                }
+            } else {
+                showMessage('无法获取音乐链接');
             }
             hideLoading();
         }
@@ -1089,7 +1125,7 @@
                 library.forEach(song => {
                     if (song.isLocal) {
                         song.cover = 'default-cover.jpg';
-                        // 从 Base64 字符���恢复 Blob URL
+                        // 从 Base64 字符恢复 Blob URL
                         if (song.src && song.src.startsWith('data:')) {
                             const blob = dataURItoBlob(song.src);
                             song.src = URL.createObjectURL(blob);
