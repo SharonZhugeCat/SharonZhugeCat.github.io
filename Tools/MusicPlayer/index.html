@@ -104,6 +104,8 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         input[type="text"] {
@@ -290,19 +292,20 @@
 
         @media screen and (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 0;
                 margin: 0;
+                min-height: 100vh;
             }
 
             .container {
-                padding: 5px;
+                padding: 10px 5px;
                 width: 100%;
-                margin-bottom: 160px;
+                margin-bottom: 180px;
             }
 
             .main-content {
                 grid-template-columns: 1fr;
-                padding: 10px;
+                padding: 10px 5px;
                 width: 100%;
                 margin: 0;
                 overflow: hidden;
@@ -370,25 +373,36 @@
 
             .platform-select {
                 gap: 8px;
-                padding: 0 5px;
+                padding: 0 10px;
+                margin-bottom: 15px;
             }
 
             .platform-btn {
                 padding: 6px 12px;
                 font-size: 13px;
-                min-width: 80px;
+                min-width: auto;
+                flex: 1;
             }
 
             .search-container {
-                padding: 0 5px;
+                padding: 0 10px;
                 margin-bottom: 15px;
+                flex-wrap: nowrap;
+            }
+
+            .search-btn {
+                padding: 8px 15px;
+                white-space: nowrap;
+                font-size: 14px;
             }
 
             .song-item {
                 padding: 8px;
                 gap: 8px;
-                margin: 0 5px 8px;
+                margin: 0 0 8px 0;
                 border-radius: 8px;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .control-btn {
@@ -404,88 +418,69 @@
 
             .player-controls {
                 padding: 15px 0;
-                background: rgba(0, 0, 0, 0.9);
+                background: rgba(0, 0, 0, 0.95);
                 height: auto;
+                bottom: 0;
+                position: fixed;
+                width: 100%;
             }
 
             .player-controls-inner {
                 width: 95%;
                 padding: 0 10px;
-                flex-wrap: wrap;
-                gap: 10px;
-                justify-content: center;
-                display: grid;
-                grid-template-areas:
-                    "info info"
-                    "progress progress"
-                    "mode controls";
-                grid-template-columns: auto 1fr;
-            }
-
-            .now-playing-info {
-                order: -1;
-                width: 100%;
-                text-align: center;
-                padding: 5px 0;
-                grid-area: info;
-                margin-bottom: 5px;
+                gap: 8px;
+                box-sizing: border-box;
             }
 
             .progress-container {
-                order: 0;
                 width: 100%;
                 margin: 5px 0;
                 grid-area: progress;
                 min-width: unset;
-            }
-
-            .play-mode-container {
-                position: static;
-                grid-area: mode;
-                margin: 5px auto;
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
                 gap: 5px;
-                padding-left: 10px;
             }
 
             .control-buttons {
                 grid-area: controls;
                 display: flex;
-                justify-content: flex-end;
-                gap: 25px;
-                padding: 10px 0;
-                padding-right: 10px;
+                justify-content: center;
+                gap: 20px;
+                padding: 5px 0;
+            }
+
+            .control-btn {
+                width: 32px;
+                height: 32px;
+                padding: 6px;
+            }
+
+            .play-mode-container {
+                grid-area: mode;
+                margin: 0;
+                padding-left: 5px;
+                align-items: center;
             }
 
             .mode-text {
                 font-size: 12px;
-                min-width: unset;
+                margin-left: 2px;
             }
 
-            .control-btn {
-                width: 35px;
-                height: 35px;
+            .song-list {
+                margin: 0;
+                padding: 5px 10px;
+                width: 100%;
+                box-sizing: border-box;
             }
 
-            .control-btn svg {
-                width: 20px;
-                height: 20px;
+            .library-section {
+                padding: 0 10px;
+                margin-bottom: 20px;
             }
 
-            .volume-control {
-                display: none;
-            }
-
-            .pagination {
-                margin-top: 15px;
-                padding: 10px 0;
-            }
-
-            .page-btn {
-                padding: 6px 12px;
-                font-size: 13px;
+            .upload-area {
+                margin: 10px 0;
+                padding: 15px;
             }
         }
 
