@@ -19,6 +19,7 @@
             max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         header {
@@ -138,7 +139,9 @@
             gap: 10px;
             max-height: 500px;
             overflow-y: auto;
-            padding-right: 10px;
+            padding: 0 5px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .song-item {
@@ -280,8 +283,15 @@
         }
 
         @media screen and (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
             .main-content {
                 grid-template-columns: 1fr;
+                padding: 15px;
+                width: auto;
+                margin: 0 5px;
             }
 
             .sidebar {
@@ -289,53 +299,52 @@
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                 padding-right: 0;
                 padding-bottom: 20px;
+                width: 100%;
+                box-sizing: border-box;
             }
 
-            .player-controls {
-                flex-wrap: wrap;
-                padding: 25px 20px;
-                gap: 10px;
-                max-width: 100%;
+            .play-mode-container {
+                position: static;
+                order: 1;
+                margin: 10px auto;
+            }
+
+            body {
+                padding-bottom: 140px;
+                overflow-x: hidden;
             }
 
             .player-controls-inner {
                 flex-wrap: wrap;
                 gap: 10px;
-            }
-
-            .progress-container {
-                width: 100%;
-                order: -1;
-                min-width: unset;
+                justify-content: center;
             }
 
             .control-buttons {
+                order: 1;
+                width: 100%;
                 display: flex;
                 justify-content: center;
-                gap: 15px;
+                gap: 20px;
+            }
+
+            .progress-container {
+                order: 0;
                 width: 100%;
-            }
-
-            .now-playing-info {
-                text-align: center;
-                width: 100%;
-                order: -2;
-            }
-
-            .play-mode-container {
-                position: absolute;
-                right: 10px;
-                bottom: 60px;
-            }
-
-            body {
-                padding-bottom: 140px;
             }
 
             .volume-control {
                 order: 2;
                 width: 100%;
-                margin-top: 10px;
+                max-width: 200px;
+                margin: 10px auto;
+            }
+
+            .now-playing-info {
+                order: -1;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
             }
         }
 
@@ -620,13 +629,14 @@
             try {
                 const response = await fetch(`${platformUrls[currentPlatform]}?name=${encodeURIComponent(song.songname)}&n=${index + 1}`);
                 const data = await response.json();
-                console.log('API返回数据:', data); // 添加调试日志
-                if (data.code === 0 && data.data.src) {
+                console.log('API返回数据:', data);
+                if ((data.code === 0 || data.code === 200) && data.data && data.data.src) {
                     return data.data.src;
                 }
-                throw new Error('获取音乐链接失败');
+                throw new Error(data.msg || '获取音乐链接失败');
             } catch (error) {
                 console.error('获取音乐链接失败:', error);
+                showMessage(error.message);
                 return null;
             }
         }
@@ -683,16 +693,20 @@
         }
 
         async function playSong(song, index) {
-            console.log('播放歌曲:', song, index); // 添加调试日志
+            console.log('播放歌曲:', song, index);
             const url = await getSongUrl(song, index);
-            console.log('获取到的URL:', url); // 添加调试日志
+            console.log('获取到的URL:', url);
             if (url) {
-                audioPlayer.src = url;
-                audioPlayer.play();
-                updatePlayButton(true);
-                // 更新当前播放信息
-                currentSong = song;
-                updateNowPlaying(song);
+                try {
+                    audioPlayer.src = url;
+                    audioPlayer.play();
+                    updatePlayButton(true);
+                    currentSong = song;
+                    updateNowPlaying(song);
+                } catch (error) {
+                    console.error('播放失败:', error);
+                    showMessage('播放失败，请尝试其他歌曲');
+                }
             }
         }
 
