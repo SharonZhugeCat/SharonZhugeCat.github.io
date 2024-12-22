@@ -291,8 +291,9 @@
 
         @media screen and (max-width: 768px) {
             .container {
-                padding: 10px;
                 width: 100%;
+                padding: 10px;
+                margin: 0;
                 box-sizing: border-box;
             }
 
@@ -300,14 +301,74 @@
                 grid-template-columns: 1fr;
                 padding: 15px;
                 gap: 15px;
+                width: 100%;
+                margin: 0;
+                box-sizing: border-box;
             }
 
-            .sidebar {
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                padding-right: 0;
-                padding-bottom: 15px;
+            .content {
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            .song-list {
+                width: 100%;
+                padding: 5px;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            .song-item {
+                width: 100%;
+                margin: 0 0 8px 0;
+                box-sizing: border-box;
+            }
+
+            /* 修复搜索框容器 */
+            .search-container {
+                width: 100%;
+                padding: 0;
                 margin-bottom: 15px;
+                box-sizing: border-box;
+            }
+
+            /* 修复平台选择按钮组 */
+            .platform-select {
+                width: 100%;
+                padding: 0;
+                margin-bottom: 15px;
+                box-sizing: border-box;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            /* 调整播放控制栏 */
+            .player-controls {
+                padding: 15px 0;
+            }
+
+            .player-controls-inner {
+                width: 100%;
+                padding: 0 15px;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            /* 调整侧边栏 */
+            .sidebar {
+                width: 100%;
+                padding: 0;
+                margin-bottom: 15px;
+            }
+
+            /* 调整上传区域 */
+            .upload-area {
+                width: 100%;
+                margin-bottom: 15px;
+                box-sizing: border-box;
             }
 
             .player-controls-inner {
@@ -513,7 +574,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* 修改搜索相关样式 */
+        /* 修改搜索相���样式 */
         @media screen and (max-width: 768px) {
             .search-container {
                 padding: 0;
@@ -544,7 +605,7 @@
     <div class="container">
         <header>
             <h1>音乐播放器</h1>
-            <p>本地音乐库 + 在线音乐搜索。欢迎大家使用！</p>
+            <p>本地音乐库 + 在线音乐搜索。欢迎大家来使用！</p>
         </header>
 
         <div class="main-content">
@@ -1068,7 +1129,7 @@
             single: '单曲循环'
         };
 
-        // 音频播放结束事件处理
+        // 音频播放结束事件��理
         audioPlayer.addEventListener('ended', () => {
             switch (currentPlayMode) {
                 case 'single':
