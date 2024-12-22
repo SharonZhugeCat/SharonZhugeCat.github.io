@@ -331,19 +331,21 @@
             }
 
             .player-controls-inner {
-                flex-wrap: wrap;
-                gap: 10px;
                 width: 100%;
-                padding: 0 15px;
+                flex-direction: column;
+                padding: 10px 15px;
+                gap: 10px;
+                margin: 0;
                 box-sizing: border-box;
-                margin: 10px 0;
             }
 
             .control-buttons {
-                width: 100%;
+                order: 1;
+                display: flex;
                 justify-content: center;
                 gap: 20px;
-                margin: 10px 0;
+                width: 100%;
+                margin: 5px 0;
             }
 
             .progress-container {
@@ -626,7 +628,7 @@
     <div class="container">
         <header>
             <h1>音乐播放器</h1>
-            <p>本地音乐库 + 在线音乐搜索。欢迎使用！</p>
+            <p>本地音乐库 + 在线音乐搜索</p>
         </header>
 
         <div class="main-content">
@@ -839,11 +841,37 @@
             };
 
             try {
-                const response = await fetch(`${platformUrls[currentPlatform]}?name=${encodeURIComponent(keyword)}&page=${page}&pagesize=30`);
+                // 根据不同平台构建不同的参数
+                let params = new URLSearchParams({
+                    name: keyword,
+                    page: page,
+                    pagesize: 30
+                });
+
+                // 针对不同平台添加特定参数
+                if (currentPlatform === 'bodian') {
+                    params.append('type', 'kuwo');
+                }
+
+                const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
-                displaySearchResults(data.data);
+                
+                // 统一数据格式
+                let formattedData = data.data;
+                if (Array.isArray(formattedData)) {
+                    formattedData = formattedData.map(song => ({
+                        songname: song.songname || song.name || song.title,
+                        name: song.name || song.artist || song.singer,
+                        cover: song.cover || song.pic || song.img,
+                        // 保存原始数据用于获取音乐URL
+                        originalData: song
+                    }));
+                }
+                
+                displaySearchResults(formattedData);
             } catch (error) {
                 console.error('搜索失败:', error);
+                showMessage('搜索失败，请重试');
             }
         }
 
@@ -855,22 +883,37 @@
             };
 
             try {
-                const keyword = song.searchKeyword || song.songname;
                 const params = new URLSearchParams({
-                    name: keyword,
-                    n: index + 1,
-                    type: currentPlatform === 'bodian' ? 'kuwo' : currentPlatform
+                    name: song.searchKeyword || song.songname,
+                    n: index + 1
                 });
+
+                // 针对不同平台添加特定参数
+                if (currentPlatform === 'bodian') {
+                    params.append('type', 'kuwo');
+                }
+
+                // 如果有原始数据，添加到请求中
+                if (song.originalData) {
+                    if (currentPlatform === 'kugou') {
+                        params.append('hash', song.originalData.hash);
+                    } else if (currentPlatform === 'bodian') {
+                        params.append('rid', song.originalData.rid);
+                    }
+                }
 
                 const response = await fetch(`${platformUrls[currentPlatform]}?${params}`);
                 const data = await response.json();
-                console.log('获取音乐URL:', data);
-                if (data.code === 0 && data.data.src) {
+                
+                if (data.code === 0 && data.data && data.data.src) {
                     return data.data.src;
                 }
+                
+                // 如果是本地音乐，返回本地源
                 if (song.src) {
                     return song.src;
                 }
+                
                 throw new Error('获取音乐链接失败');
             } catch (error) {
                 console.error('获取音乐链接失败:', error);
