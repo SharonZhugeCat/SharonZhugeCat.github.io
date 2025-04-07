@@ -1,0 +1,775 @@
+/* styles.css */
+:root {
+    --primary: #2A2A2A;
+    --secondary: #F5F5F5;
+    --accent: #FF6B6B;
+    --radius: 16px;
+    --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 日间主题 */
+[data-theme="neomorphic"] {
+    --bg: #f0f3fd;
+    --card-bg: #f0f3fd;
+    --shadow: 8px 8px 16px #d6d9e0, -8px -8px 16px #ffffff;
+    --accent: #6c5ce7;
+}
+[data-theme="neobrutalism"] {
+    --bg: #FFFFFF;
+    --card-bg: #FFFFFF;
+    --shadow: 8px 8px 0 #2A2A2A;
+    --radius: 0;
+    --border: 3px solid var(--primary);
+    --accent: #ff4757;
+}
+[data-theme="morandi"] {
+    --bg: #F8F4ED;
+    --card-bg: #EDE8E0;
+    --primary: #7A7368;
+    --accent: #B8AEA3;
+    --shadow: 3px 3px 8px rgba(147, 131, 113, 0.1);
+}
+
+/* 夜间主题 */
+[data-mode="night"] {
+    --primary: #FFFFFF;
+    
+    &[data-theme="neomorphic"] {
+        --bg: #1A1D27;
+        --card-bg: #252A37;
+        --shadow: 8px 8px 16px #0F1118, -8px -8px 16px #3B3F56;
+        --accent: #7D83FF;
+    }
+    &[data-theme="neobrutalism"] {
+        --bg: #0A0A0A;
+        --card-bg: #1A1A1A;
+        --shadow: 8px 8px 0 #000000;
+        --border: 3px solid var(--primary);
+    }
+    &[data-theme="morandi"] {
+        --bg: #2E2B28;
+        --card-bg: #3D3835;
+        --accent: #9F968A;
+    }
+}
+
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: var(--transition);
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* 卡片系统 */
+.profile-card {
+    perspective: 1000px;
+    margin: 2rem 0;
+    position: relative;
+    min-height: 500px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s;
+}
+
+[data-mode="night"] .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden;
+    padding: 2.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: var(--border, 0);
+    display: flex;
+    flex-direction: column;
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+/* 头像 */
+.avatar {
+    width: 160px !important;
+    height: 160px !important;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 1rem auto;
+    display: block;
+    border: 3px solid var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* 技能标签 */
+.skills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+}
+
+.skill-tag {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: white;
+    border-radius: 24px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    transition: transform 0.2s ease, filter 0.2s;
+}
+
+[data-theme="neomorphic"] .skill-tag {
+    background: var(--card-bg);
+    color: var(--accent);
+    box-shadow: 4px 4px 8px #d6d9e0, -4px -4px 8px #ffffff;
+}
+
+[data-theme="neobrutalism"] .skill-tag {
+    background: var(--accent) !important;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+[data-mode="night"][data-theme="neomorphic"] .skill-tag {
+    box-shadow: 4px 4px 8px #0F1118, -4px -4px 8px #3B3F56;
+}
+
+/* 链接特效 */
+.link-hover {
+    position: relative;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.link-hover::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: all 0.3s ease;
+}
+
+.link-hover:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+/* 主题选择器 */
+.theme-select {
+    position: relative;
+    width: 180px;
+    margin: 1.5rem;
+    float: right;
+    z-index: 100;
+}
+
+.select-box {
+    padding: 12px 20px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--primary);
+    text-align: center;
+    position: relative;
+}
+
+.select-options {
+    position: absolute;
+    top: 110%;
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    overflow: hidden;
+}
+
+.select-options.active {
+    opacity: 1;
+    transform: scaleY(1);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), 
+               opacity 0.2s ease;
+}
+
+.option-item {
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--primary);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.option-item:hover {
+    background: rgba(0,0,0,0.03);
+    transform: translateX(8px);
+}
+
+/* 模式切换 */
+.mode-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 1000;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .profile-card {
+        padding: 1.5rem;
+        min-height: 600px;
+    }
+    .theme-select {
+        width: 140px;
+        margin: 1rem;
+    }
+    .mode-toggle {
+        bottom: 1rem;
+        right: 1rem;
+    }
+}
+
+/* 字体 */
+@font-face {
+    font-family: 'AlibabaPuHuiTi';
+    src: url('Fonts/阿里巴巴普惠体/ALIBABA-PUHUITI-REGULAR.OTF') format('opentype');
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'AlibabaPuHuiTi';
+    src: url('Fonts/阿里巴巴普惠体/ALIBABA-PUHUITI-LIGHT.OTF') format('opentype');
+    font-weight: 300;
+}
+
+body {
+    font-family: 'AlibabaPuHuiTi', sans-serif;
+    font-weight: 400;
+}
+
+.subtitle, .option-item, .bio p {
+    font-weight: 300 !important;
+}
+
+/* 覆盖规则 */
+[data-theme="neobrutalism"] .select-box,
+[data-theme="neobrutalism"] .option-item {
+    border: 2px solid var(--primary);
+}
+
+.select-box::after {
+    display: none !important;
+}
+
+.skill-tag:active {
+    transform: scale(0.95);
+    filter: brightness(0.9);
+}
+
+/* ============= */
+.poetry-container {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.poetry-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.poetry-content {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.poetry-form {
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-style: italic;
+}
+
+/* ============= */
+.tools-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.tools-section h2 {
+    color: var(--accent);
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1rem;
+}
+
+.tool-card {
+    background: var(--bg);
+    padding: 1.5rem;
+    border-radius: calc(var(--radius) * 0.8);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+}
+
+.tool-icon {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.tool-card h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.tool-list {
+    list-style: none;
+    padding: 0;
+}
+
+.tool-list li {
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    background: rgba(0,0,0,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .tools-section {
+        padding: 1.5rem;
+        margin: 2rem -1rem;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .tools-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .tool-card {
+        padding: 1rem;
+    }
+
+    .tool-list li {
+        font-size: 0.9rem;
+    }
+}
+
+/* 大屏优化 */
+@media (min-width: 1200px) {
+    .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ================ 新野蛮主义主题修正 ================ */
+[data-theme="neobrutalism"] {
+    .poetry-card {
+        border: var(--border);
+        box-shadow: var(--shadow) !important; /* 恢复阴影 */
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .tools-section {
+        border: var(--border);
+        box-shadow: var(--shadow) !important; /* 恢复阴影 */
+        padding: 1.5rem;
+    }
+    
+    .tool-card {
+        border: 2px solid var(--primary);
+        box-shadow: var(--shadow) !important; /* 新增阴影 */
+        padding: 1.2rem;
+        transition: all 0.2s ease;
+    }
+
+    .tool-card:hover {
+        box-shadow: 4px 4px 0 var(--primary) !important;
+        transform: translate(-2px, -2px);
+    }
+}
+
+/* ================ 工具卡片交互优化 ================ */
+.tool-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.tool-card::after {
+    content: '↗';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.tool-card:hover {
+    text-decoration: none;
+}
+
+.tool-card:hover::after {
+    opacity: 1;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    .tool-card::after {
+        display: none;
+    }
+    
+    [data-theme="neobrutalism"] .tool-card:hover {
+        transform: none !important;
+        box-shadow: var(--shadow) !important;
+    }
+}
+
+.tool-item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.tool-item li {
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    background: rgba(0,0,0,0.05);
+    border-radius: 24px;
+    text-align: center;
+    transition: inherit;
+}
+
+/* 链接悬停效果 */
+.tool-item:hover li {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* 新野蛮主义主题适配 */
+[data-theme="neobrutalism"] {
+    .tool-item li {
+        border: 1px solid var(--primary);
+        background: transparent !important;
+    }
+    
+    .tool-item:hover li {
+        background: var(--accent) !important;
+        border-color: transparent;
+        box-shadow: 2px 2px 0 var(--primary);
+    }
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    .tool-item li {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+    
+    [data-theme="neobrutalism"] .tool-item:hover li {
+        box-shadow: none;
+    }
+}
+
+/* ================ 星座运势样式 ================ */
+/* 在styles.css末尾添加 */
+/* ================ 星座运势样式 ================ */
+.back-btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    margin: 1rem 0;
+    border-radius: var(--radius);
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+}
+
+.horoscope-header {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.constellation-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+select {
+    background: var(--card-bg);
+    color: var(--primary);
+    border: var(--border, none);
+    box-shadow: var(--shadow);
+    padding: 12px;
+    border-radius: var(--radius);
+    width: 100%;
+}
+
+.time-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.time-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+}
+
+.time-btn.active {
+    background: var(--accent);
+    color: white;
+}
+
+.fortune-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin: 1rem 0;
+}
+
+.fortune-stars {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    justify-content: center;
+}
+
+.star {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.luck-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.luck-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0,0,0,0.05);
+    border-radius: var(--radius);
+}
+
+.detail-item {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(0,0,0,0.03);
+    border-radius: calc(var(--radius) * 0.6);
+}
+
+.detail-item h4 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.index {
+    font-size: 0.9em;
+    color: var(--primary);
+    opacity: 0.8;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+/* 新野蛮主义适配 */
+[data-theme="neobrutalism"] {
+    .fortune-card, select, .time-btn {
+        border: var(--border) !important;
+    }
+    
+    .luck-item, .detail-item {
+        border: 1px solid var(--primary);
+        background: transparent !important;
+    }
+    
+    .time-btn.active {
+        box-shadow: 4px 4px 0 var(--primary) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .constellation-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .time-selector {
+        flex-wrap: wrap;
+    }
+    
+    .luck-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .fortune-card {
+        padding: 1rem;
+    }
+}
+/* ================ 热搜页面样式 ================ */
+.platform-filter .select-box {
+    width: 100%;
+    max-width: 300px;
+}
+
+.subtitle {
+    color: var(--accent);
+    font-size: 0.9em;
+    margin-left: 1rem;
+    opacity: 0.8;
+}
+
+.update-time {
+    color: var(--primary);
+    opacity: 0.7;
+    font-size: 0.8em;
+    margin-top: 0.5rem;
+}
+
+.hot-tag {
+    background: var(--accent);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-left: 1rem;
+}
+
+.error-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    text-align: center;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    color: var(--accent);
+}
+
+/* 新野蛮主义适配 */
+[data-theme="neobrutalism"] {
+    .platform-card {
+        border: var(--border);
+        padding: 1.2rem;
+    }
+    
+    .hot-item {
+        border: 1px solid var(--primary);
+        background: transparent !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .hot-item {
+        padding: 0.8rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .hot-index {
+        margin-bottom: 0.5rem;
+    }
+    
+    .hot-tag {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}

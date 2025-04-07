@@ -1,0 +1,107 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharon的小站</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="neomorphic" data-mode="day">
+    <!-- 主题选择器 -->
+    <div class="theme-select">
+        <div class="select-box" onclick="toggleSelect()">新拟态</div>
+        <div class="select-options">
+            <div class="option-item" onclick="setTheme('neomorphic')">新拟态</div>
+            <div class="option-item" onclick="setTheme('neobrutalism')">新野蛮主义</div>
+            <div class="option-item" onclick="setTheme('morandi')">莫兰迪</div>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <div class="poetry-container">
+            <div class="poetry-card">
+                <p class="poetry-content">加载中...</p>
+                <p class="poetry-form"></p>
+            </div>
+        </div>
+        <!-- 身份卡片 -->
+        <div class="profile-card animate">
+            <div class="card-inner">
+                <!-- 日间身份 -->
+                <div class="card-face front">
+                    <img src="Assets/诸葛喵.png" alt="昼间头像" class="avatar">
+                    <h1>诸葛喵</h1>
+                    <p class="subtitle">学生 | B站UP主 | 微信表情包艺术家</p>
+                    <div class="skills">
+                        <span class="skill-tag">HTML/CSS</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">C++</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Blender</span>
+                        <span class="skill-tag">Unreal Engine</span>
+                        <span class="skill-tag">Godot</span>
+                        <span class="skill-tag">AI</span>
+                        <span class="skill-tag">Stable Diffusion</span>
+                        <span class="skill-tag">2024年度优秀表情艺术家</span>
+                    </div>
+                    <div class="bio">
+                        <p>可以通过右下角按钮切换昼夜模式和身份哦~</p>
+                        <p>🌞 日间模式激活！</p>
+                        <p>B站主页：<a href="https://space.bilibili.com/85363357" class="link-hover">@诸葛喵</a></p>
+                    </div>
+                </div>
+
+                <!-- 夜间身份 -->
+                <div class="card-face back">
+                    <img src="Assets/上官汪.png" alt="夜间头像" class="avatar">
+                    <h1>上官汪</h1>
+                    <p class="subtitle">作家</p>
+                    <div class="skills">
+                        <span class="skill-tag">小说</span>
+                        <span class="skill-tag">起点中文网</span>
+                        <span class="skill-tag">星轮坠世</span>
+                    </div>
+                    <div class="bio">
+                        <p>可以通过右下角按钮切换昼夜模式和身份哦~</p>
+                        <p>🌙 夜间模式启动！</p>
+                        <p>我的作品：<a href="https://book.qidian.com/info/1043364328/" class="link-hover">星轮坠世</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🎨</div>
+                <h3>日常工具</h3>
+                <ul class="tool-list">
+                    <a href="Tools/Horoscope/index.html" target="_blank" class="tool-item">
+                        <li>星座运势</li>
+                    </a>
+                    <a href="Tools/HotList/index.html" target="_blank" class="tool-item">
+                        <li>聚合热搜</li>
+                    </a>
+                </ul>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🤖</div>
+                <h3>AI助手</h3>
+                <ul class="tool-list">
+                    <a href="Tools/AISearch/index.html" target="_blank" class="tool-item">
+                        <li>AI搜索</li>
+                    </a>
+                    <a href="Tools/AIPictureTool/index.html" target="_blank" class="tool-item">
+                        <li>AI生图+AI识别</li>
+                    </a>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模式切换按钮 -->
+    <div class="mode-toggle" onclick="toggleMode()">🌓</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
