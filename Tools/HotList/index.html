@@ -1,0 +1,312 @@
+<!-- hotlist.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全网热搜聚合</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        /* 新增热搜页面专用样式 */
+        .platform-filter {
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .platform-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .platform-header {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .hot-list {
+            max-height: 70vh;
+            overflow-y: auto;
+            transition: max-height 0.3s ease;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(0,0,0,0.1);
+        }
+
+        .hot-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .hot-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+
+        .hot-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .hot-list.collapsed {
+            max-height: 0;
+        }
+
+        .hot-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(0,0,0,0.03);
+            border-radius: calc(var(--radius) * 0.6);
+        }
+
+        .hot-index {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .show-more {
+            text-align: center;
+            padding: 1rem;
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .platform-card {
+            margin: 1.5rem 0;
+        }
+
+        .error-card {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .hot-list {
+                max-height: 60vh;
+            }
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: var(--radius);
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .back-btn::before {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .back-btn:hover::before {
+            width: 100%;
+        }
+
+        /* 新野蛮主义主题适配 */
+        [data-theme="neobrutalism"] .back-btn {
+            border: 2px solid var(--primary);
+            box-shadow: 4px 4px 0 var(--primary);
+        }
+
+        [data-theme="neobrutalism"] .back-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--primary);
+        }
+    </style>
+</head>
+<body data-theme="neomorphic" data-mode="day">
+    <!-- 主题选择器 -->
+    <div class="theme-select">
+        <div class="select-box" onclick="toggleSelect()">新拟态</div>
+        <div class="select-options">
+            <div class="option-item" onclick="setTheme('neomorphic')">新拟态</div>
+            <div class="option-item" onclick="setTheme('neobrutalism')">新野蛮主义</div>
+            <div class="option-item" onclick="setTheme('morandi')">莫兰迪</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="../../index.html" class="back-btn">← 返回主站</a>
+
+        <h1 class="page-title">🔥 全网热搜聚合</h1>
+        
+        <!-- 平台筛选 -->
+        <div class="platform-filter">
+            <select class="select-box" id="platformFilter" onchange="filterPlatform(this.value)">
+                <option value="all">全部平台</option>
+            </select>
+        </div>
+
+        <div id="hotlist-container">
+            <div class="loading">正在加载实时热点...</div>
+        </div>
+    </div>
+
+    <!-- 模式切换按钮 -->
+    <div class="mode-toggle" onclick="toggleMode()">🌓</div>
+
+    <script>
+        let originalHotData = [];
+
+        // 初始化主题系统
+        function setupTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'neomorphic';
+            const savedMode = localStorage.getItem('mode') || 'day';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.body.setAttribute('data-mode', savedMode);
+
+            window.toggleSelect = () => {
+                document.querySelector('.select-options').classList.toggle('active');
+            };
+
+            window.setTheme = (theme) => {
+                document.body.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                document.querySelector('.select-box').textContent = {
+                    neomorphic: '新拟态',
+                    neobrutalism: '新野蛮主义',
+                    morandi: '莫兰迪'
+                }[theme];
+                document.querySelector('.select-options').classList.remove('active');
+            };
+
+            window.toggleMode = () => {
+                const currentMode = document.body.getAttribute('data-mode');
+                const newMode = currentMode === 'day' ? 'night' : 'day';
+                document.body.setAttribute('data-mode', newMode);
+                localStorage.setItem('mode', newMode);
+            };
+        }
+
+        // 加载热搜数据
+        async function loadHotList() {
+            try {
+                const response = await fetch('https://api.vvhan.com/api/hotlist/all');
+                const data = await response.json();
+                if (!data.success) throw new Error('数据加载失败');
+                
+                // 存储原始数据
+                originalHotData = data.data;
+                
+                initPlatformFilter(originalHotData);
+                renderHotList(originalHotData);
+            } catch (error) {
+                console.error('加载失败:', error);
+                document.getElementById('hotlist-container').innerHTML = `
+                    <div class="error-card">
+                        <p>⚠️ 暂时无法获取实时热点，请稍后刷新</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 初始化平台筛选
+        function initPlatformFilter(data) {
+            const filter = document.getElementById('platformFilter');
+            const platforms = [...new Set(data.map(p => p.name))];
+            platforms.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p;
+                option.textContent = p;
+                filter.appendChild(option);
+            });
+        }
+
+        // 渲染热搜列表
+        function renderHotList(data, filter = 'all') {
+            const container = document.getElementById('hotlist-container');
+            const filteredData = filter === 'all' ? data : data.filter(p => p.name === filter);
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="error-card">当前平台暂无数据</div>`;
+                return;
+            }
+
+            container.innerHTML = filteredData.map(platform => `
+                <div class="platform-card">
+                    <div class="platform-header" onclick="togglePlatform(this)">
+                        <div>
+                            <h2>${platform.name}</h2>
+                            ${platform.subtitle ? `<span class="subtitle">${platform.subtitle}</span>` : ''}
+                            <div class="update-time">更新时间：${platform.update_time}</div>
+                        </div>
+                        <div class="toggle-icon">▼</div>
+                    </div>
+                    <div class="hot-list">
+                        ${platform.data.map(item => `
+                            <a href="${item.mobil_url || item.url}" 
+                            target="_blank" 
+                            class="hot-item link-hover">
+                                <div class="hot-index">${item.index}</div>
+                                <div class="hot-content">
+                                    <div class="hot-title">${item.title}</div>
+                                    ${item.hot ? `<div class="hot-tag">${item.hot}</div>` : ''}
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // 初始化折叠状态
+            document.querySelectorAll('.hot-list').forEach(list => {
+                list.style.maxHeight = '0';
+                list.previousElementSibling.querySelector('.toggle-icon').style.transform = 'rotate(-90deg)';
+            });
+        }
+
+        // 平台筛选
+        function filterPlatform(platform) {
+            renderHotList(originalHotData, platform);
+        }
+
+        // 切换平台展开/折叠
+        function togglePlatform(header) {
+            const list = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isCollapsed = list.style.maxHeight === '0px';
+
+            list.style.maxHeight = isCollapsed ? '600px' : '0';
+            icon.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+        }
+
+        // 初始化
+        window.originalHotData = [];
+        setupTheme();
+        loadHotList();
+    </script>
+</body>
+</html>

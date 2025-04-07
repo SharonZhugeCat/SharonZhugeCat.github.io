@@ -1,0 +1,267 @@
+<!-- Tools/AISearch/index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能搜索</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body data-theme="neomorphic" data-mode="day">
+    <!-- 主题选择器 -->
+    <div class="theme-select">
+        <div class="select-box" onclick="toggleSelect()">新拟态</div>
+        <div class="select-options">
+            <div class="option-item" onclick="setTheme('neomorphic')">新拟态</div>
+            <div class="option-item" onclick="setTheme('neobrutalism')">新野蛮主义</div>
+            <div class="option-item" onclick="setTheme('morandi')">莫兰迪</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 返回按钮 -->
+        <a href="../../index.html" class="back-btn">← 返回主站</a>
+
+        <div class="search-header">
+            <h1>🔍 AI智能搜索</h1>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="输入您想了解的问题...">
+                <button onclick="search()">AI解答</button>
+            </div>
+        </div>
+
+        <div id="resultContainer">
+            <div class="loading">✨ 等待您提出问题...</div>
+        </div>
+    </div>
+
+    <!-- 模式切换按钮 -->
+    <div class="mode-toggle" onclick="toggleMode()">🌓</div>
+
+    <script>
+        // 初始化主题系统
+        function setupTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'neomorphic';
+            const savedMode = localStorage.getItem('mode') || 'day';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.body.setAttribute('data-mode', savedMode);
+
+            window.toggleSelect = () => {
+                document.querySelector('.select-options').classList.toggle('active');
+            };
+
+            window.setTheme = (theme) => {
+                document.body.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                document.querySelector('.select-box').textContent = {
+                    neomorphic: '新拟态',
+                    neobrutalism: '新野蛮主义',
+                    morandi: '莫兰迪'
+                }[theme];
+                document.querySelector('.select-options').classList.remove('active');
+            };
+
+            window.toggleMode = () => {
+                const currentMode = document.body.getAttribute('data-mode');
+                const newMode = currentMode === 'day' ? 'night' : 'day';
+                document.body.setAttribute('data-mode', newMode);
+                localStorage.setItem('mode', newMode);
+            };
+        }
+
+        // 执行搜索
+        async function search() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (!keyword) return;
+
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = '<div class="loading">🔍 AI正在思考中...</div>';
+
+            try {
+                const response = await fetch(`https://api.pearktrue.cn/api/aisearch/?keyword=${encodeURIComponent(keyword)}`);
+                const data = await response.json();
+                
+                if (data.code !== 200) throw new Error(data.msg);
+                renderResult(data);
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="error-card">
+                        <p>⚠️ 搜索失败：${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 渲染结果
+        function renderResult(data) {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = `
+                <div class="result-card">
+                    <div class="answer-section">
+                        <h2>${data.keyword}</h2>
+                        <div class="answer-text">${data.data.text.replace(/\n/g, '<br>')}</div>
+                    </div>
+
+                    ${data.data.related_questions.length > 0 ? `
+                    <div class="related-questions">
+                        <h3>相关问题</h3>
+                        <div class="question-list">
+                            ${data.data.related_questions.map(q => `
+                                <div class="question-item" onclick="this.querySelector('a').click()">
+                                    <a href="javascript:void(0)" onclick="document.getElementById('searchInput').value='${q}';search()">${q}</a>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>` : ''}
+
+                    <div class="sources-section">
+                        <h3>参考来源</h3>
+                        <div class="source-list">
+                            ${data.data.sources.map(source => `
+                                <a href="${source.link}" target="_blank" class="source-item link-hover">
+                                    <div class="source-title">${source.title}</div>
+                                    <div class="source-snippet">${source.snippet}</div>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 初始化
+        setupTheme();
+        document.getElementById('searchInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') search();
+        });
+    </script>
+
+    <style>
+        /* AI搜索页面样式 */
+        .search-header {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .search-box button {
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .answer-text {
+            line-height: 1.8;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0,0,0,0.03);
+            border-radius: calc(var(--radius) * 0.6);
+        }
+
+        .related-questions {
+            margin: 2rem 0;
+        }
+
+        .question-list {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .question-item {
+            padding: 1rem;
+            background: rgba(0,0,0,0.03);
+            border-radius: calc(var(--radius) * 0.6);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .question-item a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .sources-section {
+            margin-top: 2rem;
+        }
+
+        .source-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .source-item {
+            padding: 1rem;
+            background: rgba(0,0,0,0.03);
+            border-radius: calc(var(--radius) * 0.6);
+        }
+
+        .source-title {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .source-snippet {
+            color: var(--primary);
+            opacity: 0.8;
+            font-size: 0.9em;
+            margin-top: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 新野蛮主义适配 */
+        [data-theme="neobrutalism"] {
+            #searchInput, .result-card, .question-item, .source-item {
+                border: var(--border);
+                box-shadow: var(--shadow);
+            }
+
+            .search-box button {
+                box-shadow: 4px 4px 0 var(--primary);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .question-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

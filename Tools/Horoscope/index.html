@@ -1,0 +1,63 @@
+<!-- Tools/Horoscope/index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星座运势</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body data-theme="neomorphic" data-mode="day">
+    <!-- 主题选择器 -->
+    <div class="theme-select">
+        <div class="select-box" onclick="toggleSelect()">新拟态</div>
+        <div class="select-options">
+            <div class="option-item" onclick="setTheme('neomorphic')">新拟态</div>
+            <div class="option-item" onclick="setTheme('neobrutalism')">新野蛮主义</div>
+            <div class="option-item" onclick="setTheme('morandi')">莫兰迪</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 返回按钮 -->
+        <a href="../../index.html" class="back-btn">← 返回主站</a>
+
+        <div class="horoscope-header">
+            <h1>🔮 星座运势</h1>
+            <div class="constellation-selector">
+                <select id="constellation" class="select-box">
+                    <option value="aries">白羊座</option>
+                    <option value="taurus">金牛座</option>
+                    <option value="gemini">双子座</option>
+                    <option value="cancer">巨蟹座</option>
+                    <option value="leo">狮子座</option>
+                    <option value="virgo">处女座</option>
+                    <option value="libra">天秤座</option>
+                    <option value="scorpio">天蝎座</option>
+                    <option value="sagittarius">射手座</option>
+                    <option value="capricorn">摩羯座</option>
+                    <option value="aquarius">水瓶座</option>
+                    <option value="pisces">双鱼座</option>
+                </select>
+            </div>
+
+            <div class="time-selector">
+                <button class="time-btn active" data-time="today">今日</button>
+                <button class="time-btn" data-time="nextday">明日</button>
+                <button class="time-btn" data-time="week">本周</button>
+                <button class="time-btn" data-time="month">本月</button>
+            </div>
+        </div>
+
+        <div id="fortune-content">
+            <div class="loading">✨ 正在获取星座能量...</div>
+        </div>
+    </div>
+
+    <!-- 模式切换按钮 -->
+    <div class="mode-toggle" onclick="toggleMode()">🌓</div>
+
+    <script src="../../script.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
